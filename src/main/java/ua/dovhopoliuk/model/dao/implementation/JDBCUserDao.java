@@ -53,7 +53,7 @@ public class JDBCUserDao implements UserDao {
             "password = ? " +
             "WHERE user_id = ?";
 
-    private static final String SQL_DELETE_USER_BY_ID = "DELETE * FROM users " +
+    private static final String SQL_DELETE_USER_BY_ID = "DELETE FROM users " +
             "WHERE user_id = ?";
 
     JDBCUserDao(Connection connection) {

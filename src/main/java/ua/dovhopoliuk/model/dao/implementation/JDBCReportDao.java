@@ -29,6 +29,21 @@ public class JDBCReportDao implements ReportDao {
             "topic AS 'report_topic' " +
             "FROM reports";
 
+    private static final String SQL_SELECT_REPORT_BY_ID = "SELECT *, " +
+            "topic AS 'report_topic' " +
+            "FROM reports " +
+            "WHERE report_id = ?";
+
+    private static final String SQL_UPDATE_REPORT_BY_ID = "UPDATE reports SET " +
+            "topic = ?, " +
+            "conference_id = ?, " +
+            "user_id = ? " +
+            "WHERE report_id = ?";
+
+    private static final String SQL_DELETE_REPORT_BY_ID = "DELETE FROM reports " +
+            "WHERE report_id = ?";
+
+
     JDBCReportDao(Connection connection) {
         this.connection = connection;
     }
@@ -49,27 +64,63 @@ public class JDBCReportDao implements ReportDao {
 
     @Override
     public Report findById(Long id) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_SELECT_REPORT_BY_ID)) {
+            preparedStatement.setLong(1, id);
+
+            return findReportsByPreparedStatement(preparedStatement).get(0);
+
+        } catch (SQLException e) {
+            System.err.format("SQL State: %s\n%s", e.getSQLState(), e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return null;
     }
 
     @Override
     public List<Report> findAll() {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_SELECT_ALL_REPORTS)) {
+
+            return findReportsByPreparedStatement(preparedStatement);
+
+        } catch (SQLException e) {
+            System.err.format("SQL State: %s\n%s", e.getSQLState(), e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return null;
     }
 
     @Override
     public void update(Report entity) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_UPDATE_REPORT_BY_ID)) {
+            fillPreparedStatement(entity, preparedStatement);
+            preparedStatement.setLong(4, entity.getId());
+            preparedStatement.executeUpdate();
 
+        } catch (SQLException e) {
+            System.err.format("SQL State: %s\n%s", e.getSQLState(), e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void delete(Long id) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_DELETE_REPORT_BY_ID)) {
+            preparedStatement.setLong(1, id);
+            preparedStatement.executeUpdate();
 
+        } catch (SQLException e) {
+            System.err.format("SQL State: %s\n%s", e.getSQLState(), e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void close() throws Exception {
-
+        connection.close();
     }
 
     private void fillPreparedStatement(Report entity, PreparedStatement preparedStatement) throws SQLException {

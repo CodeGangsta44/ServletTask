@@ -34,12 +34,6 @@ public class JDBCConferenceDao implements ConferenceDao {
     private static final String SQL_DELETE_REGISTERED_USER = "DELETE * FROM users_conferences " +
             "WHERE user_id = ? AND conference_id = ?";
 
-    private static final String SQL_INSERT_REPORT = "INSERT INTO conferences_reports " +
-            "(conference_id, reports_id) " +
-            "VALUES(?, ?)";
-
-    private static final String SQL_DELETE_REPORT = "DELETE * FROM conferences_reports " +
-            "WHERE conference_id = ? AND reports_id = ?";
 
     private static final String SQL_SELECT_ALL_CONFERENCES = "SELECT *, " +
             "c.topic AS 'conference_topic', " +
@@ -48,10 +42,8 @@ public class JDBCConferenceDao implements ConferenceDao {
             "FROM conferences AS c " +
             "JOIN users_conferences AS uc " +
             "ON c.conference_id = uc.conference_id " +
-            "JOIN conferences_reports AS cr " +
-            "ON c.conference_id = cr.conference_id " +
             "JOIN reports AS r " +
-            "ON cr.reports_id = r.report_id";
+            "ON c.conference_id = r.conference_id";
 
     private static final String SQL_SELECT_CONFERENCE_BY_ID = "SELECT *, " +
             "c.topic AS 'conference_topic', " +
@@ -60,10 +52,8 @@ public class JDBCConferenceDao implements ConferenceDao {
             "FROM conferences AS c " +
             "JOIN users_conferences AS uc " +
             "ON c.conference_id = uc.conference_id " +
-            "JOIN conferences_reports AS cr " +
-            "ON c.conference_id = cr.conference_id " +
             "JOIN reports AS r " +
-            "ON cr.reports_id = r.report_id " +
+            "ON c.conference_id = r.conference_id " +
             "WHERE c.conference_id = ?";
 
     private static final String SQL_UPDATE_CONFERENCE_BY_ID = "UPDATE conferences SET " +
@@ -74,6 +64,9 @@ public class JDBCConferenceDao implements ConferenceDao {
             "approved = ?, " +
             "finished = ?, " +
             "number_of_visited_guests = ?" +
+            "WHERE conference_id = ?";
+
+    private static final String SQL_DELETE_CONFERENCE_BY_ID = "DELETE FROM conferences " +
             "WHERE conference_id = ?";
 
     JDBCConferenceDao(Connection connection) {
@@ -92,7 +85,6 @@ public class JDBCConferenceDao implements ConferenceDao {
             }
 
             insertRegisteredUsers(entity.getRegisteredGuests(), entity.getId());
-            insertReports(entity.getReports(), entity.getId());
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -136,8 +128,6 @@ public class JDBCConferenceDao implements ConferenceDao {
         Set<User> usersToDelete = getUsersToDelete(entity, oldConference);
         Set<User> usersToInsert = getUsersToInsert(entity, oldConference);
 
-        Set<Report> reportsToDelete = getReportsToDelete(entity, oldConference);
-        Set<Report> reportsToInsert = getReportsToInsert(entity, oldConference);
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_UPDATE_CONFERENCE_BY_ID)) {
             connection.setAutoCommit(false);
@@ -148,9 +138,6 @@ public class JDBCConferenceDao implements ConferenceDao {
 
             deleteRegisteredUsers(usersToDelete, entity.getId());
             insertRegisteredUsers(usersToInsert, entity.getId());
-
-            deleteReports(reportsToDelete, entity.getId());
-            insertReports(reportsToInsert, entity.getId());
 
             connection.commit();
 
@@ -168,7 +155,25 @@ public class JDBCConferenceDao implements ConferenceDao {
 
     @Override
     public void delete(Long id) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_DELETE_CONFERENCE_BY_ID)) {
+            connection.setAutoCommit(false);
+            preparedStatement.setLong(1, id);
 
+            deleteRegisteredUsers(findById(id).getRegisteredGuests(), id);
+            preparedStatement.executeUpdate();
+
+            connection.commit();
+
+        } catch (SQLException e) {
+            try {
+                connection.rollback();
+            } catch (SQLException exception) {
+                System.err.format("SQL State: %s\n%s", e.getSQLState(), e.getMessage());
+            }
+            System.err.format("SQL State: %s\n%s", e.getSQLState(), e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -199,27 +204,6 @@ public class JDBCConferenceDao implements ConferenceDao {
             try (PreparedStatement preparedStatement = connection.prepareStatement(preparedStatementString)) {
                 preparedStatement.setLong(1, id);
                 preparedStatement.setLong(2, user.getId());
-
-                preparedStatement.executeUpdate();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private void insertReports(Set<Report> reports, Long id) {
-        reportsUpdate(reports, id, SQL_INSERT_REPORT);
-    }
-
-    private void deleteReports(Set<Report> reports, Long id) {
-        reportsUpdate(reports, id, SQL_DELETE_REPORT);
-    }
-
-    private void reportsUpdate(Set<Report> reports, Long id, String preparedStatementString) {
-        for (Report report : reports) {
-            try (PreparedStatement preparedStatement = connection.prepareStatement(preparedStatementString)) {
-                preparedStatement.setLong(1, id);
-                preparedStatement.setLong(2, report.getId());
 
                 preparedStatement.executeUpdate();
             } catch (SQLException e) {
@@ -274,17 +258,4 @@ public class JDBCConferenceDao implements ConferenceDao {
                 .collect(Collectors.toSet());
     }
 
-    private Set<Report> getReportsToDelete(Conference newConference, Conference oldConference) {
-        return oldConference.getReports()
-                .stream()
-                .filter(report -> !newConference.getReports().contains(report))
-                .collect(Collectors.toSet());
-    }
-
-    private Set<Report> getReportsToInsert(Conference newConference, Conference oldConference) {
-        return newConference.getReports()
-                .stream()
-                .filter(report -> !oldConference.getReports().contains(report))
-                .collect(Collectors.toSet());
-    }
 }
