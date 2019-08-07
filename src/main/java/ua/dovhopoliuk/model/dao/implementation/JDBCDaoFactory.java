@@ -1,7 +1,6 @@
 package ua.dovhopoliuk.model.dao.implementation;
 
-import ua.dovhopoliuk.model.dao.DaoFactory;
-import ua.dovhopoliuk.model.dao.UserDao;
+import ua.dovhopoliuk.model.dao.*;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -10,8 +9,33 @@ import java.sql.SQLException;
 public class JDBCDaoFactory extends DaoFactory {
 
     @Override
-    public UserDao createUserDAO() {
+    public UserDao createUserDao() {
         return new JDBCUserDao(getConnection());
+    }
+
+    @Override
+    public ConferenceDao createConferenceDao() {
+        return new JDBCConferenceDao(getConnection());
+    }
+
+    @Override
+    public ReportDao createReportDao() {
+        return new JDBCReportDao(getConnection());
+    }
+
+    @Override
+    public ReportRequestDao createReportRequestDao() {
+        return null;
+    }
+
+    @Override
+    public NotificationDao createNotificationDao() {
+        return null;
+    }
+
+    @Override
+    public VoteDao createVoteDao() {
+        return null;
     }
 
     private Connection getConnection(){

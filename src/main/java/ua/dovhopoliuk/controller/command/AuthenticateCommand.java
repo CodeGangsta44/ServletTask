@@ -15,7 +15,7 @@ public class AuthenticateCommand implements Command {
         User user = userService.getUserByLogin(login);
 
         if (user == null || !CommandBCryptUtility.isPasswordMatches(password, user.getPassword())) {
-            return "redirect:/login.jsp?error";
+            return "redirect:/login?error";
         } else {
             CommandSessionUtility.setUserForSession(request, user);
             return "redirect:/home";

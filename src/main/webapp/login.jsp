@@ -29,7 +29,7 @@
                 <div class="alert alert-warning" role="alert"><fmt:message key="login.error"/></div>
             </c:if>
 
-            <form method="post" action="${pageContext.request.contextPath}/app/authenticate" style="margin-bottom: 30px" name="form" autocomplete="off" >
+            <form method="post" action="${pageContext.request.contextPath}/app/api/users/authenticate" style="margin-bottom: 30px" name="form" autocomplete="off" >
                 <div class="form-group">
                     <label id="inputLoginLabel" for="exampleInputLogin"><fmt:message key="label.login"/></label>
                     <input type="text"
@@ -51,7 +51,7 @@
                 </button>
             </form>
             <div class="alert alert-info" role="alert">
-                <a href="/registration"><fmt:message key="title.registration"/></a>
+                <a href="/app/registration"><fmt:message key="title.registration"/></a>
 
                 <span style="float: right">
                         <a href="?lang=en"><fmt:message key="language.en"/></a>

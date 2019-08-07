@@ -1,20 +1,18 @@
 package ua.dovhopoliuk.model.dao.implementation;
 
 import ua.dovhopoliuk.model.dao.UserDao;
+import ua.dovhopoliuk.model.dao.mapper.UserMapper;
 import ua.dovhopoliuk.model.entity.Role;
 import ua.dovhopoliuk.model.entity.User;
 import ua.dovhopoliuk.model.exception.LoginNotUniqueException;
 
-import javax.xml.transform.Result;
 import java.sql.*;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class JDBCUserDao implements UserDao {
     private final Connection connection;
 
-    private static final String SQL_INSERT = "INSERT INTO users " +
+    private static final String SQL_INSERT_USER = "INSERT INTO users " +
             "(surname, " +
             "name, " +
             "patronymic, " +
@@ -24,14 +22,39 @@ public class JDBCUserDao implements UserDao {
             "VALUES (?,?,?,?,?,?)";
 
     private static final String SQL_INSERT_ROLE = "INSERT INTO user_roles " +
-            "(user_id, " +
+            "(user_user_id, " +
             "roles) " +
             "VALUES (?,?)";
 
+
     private static final String SQL_SELECT_BY_LOGIN = "SELECT * FROM users AS u " +
             "JOIN user_roles AS ur " +
-            "ON u.id = ur.user_id " +
+            "ON u.user_id = ur.user_user_id " +
             "WHERE u.login = ?";
+
+    private static final String SQL_SELECT_BY_ID = "SELECT * FROM users AS u " +
+            "JOIN user_roles AS ur " +
+            "ON u.user_id = ur.user_user_id " +
+            "WHERE u.user_id = ?";
+
+    private static final String SQL_SELECT_ALL_USERS = "SELECT * FROM users AS u " +
+            "JOIN user_roles AS ur " +
+            "ON u.user_id = ur.user_user_id";
+
+    private static final String SQL_DELETE_ROLES_BY_USER_ID = "DELETE * FROM user_roles " +
+            "WHERE user_user_id = ?";
+
+    private static final String SQL_UPDATE_USER_BY_ID = "UPDATE users SET " +
+            "surname = ?, " +
+            "name = ?, " +
+            "patronymic = ?, " +
+            "login = ?, " +
+            "email = ?," +
+            "password = ? " +
+            "WHERE user_id = ?";
+
+    private static final String SQL_DELETE_USER_BY_ID = "DELETE * FROM users " +
+            "WHERE user_id = ?";
 
     JDBCUserDao(Connection connection) {
         this.connection = connection;
@@ -39,7 +62,7 @@ public class JDBCUserDao implements UserDao {
 
     @Override
     public void create(User entity) {
-        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_INSERT, Statement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_INSERT_USER, Statement.RETURN_GENERATED_KEYS)) {
             fillPreparedStatement(entity, preparedStatement);
             preparedStatement.executeUpdate();
             ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
@@ -62,22 +85,81 @@ public class JDBCUserDao implements UserDao {
 
     @Override
     public User findById(Long id) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_SELECT_BY_ID)) {
+            preparedStatement.setLong(1, id);
+
+            return findUsersByPreparedStatement(preparedStatement).get(0);
+
+        } catch (SQLException e) {
+            System.err.format("SQL State: %s\n%s", e.getSQLState(), e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return null;
     }
 
     @Override
     public List<User> findAll() {
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_SELECT_ALL_USERS)) {
+
+            return findUsersByPreparedStatement(preparedStatement);
+
+        } catch (SQLException e) {
+            System.err.format("SQL State: %s\n%s", e.getSQLState(), e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return null;
     }
 
     @Override
     public void update(User entity) {
 
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_UPDATE_USER_BY_ID)) {
+            connection.setAutoCommit(false);
+
+            fillPreparedStatement(entity, preparedStatement);
+            preparedStatement.setLong(7, entity.getId());
+            preparedStatement.executeUpdate();
+            deleteRoles(entity.getId());
+            insertRoles(entity);
+
+            connection.commit();
+
+        } catch (SQLException e) {
+            try {
+                connection.rollback();
+            } catch (SQLException exception) {
+                System.err.format("SQL State: %s\n%s", e.getSQLState(), e.getMessage());
+            }
+            System.err.format("SQL State: %s\n%s", e.getSQLState(), e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void delete(Long id) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_DELETE_USER_BY_ID)) {
+            connection.setAutoCommit(false);
+            preparedStatement.setLong(1, id);
 
+            deleteRoles(id);
+            preparedStatement.executeUpdate();
+
+            connection.commit();
+
+        } catch (SQLException e) {
+            try {
+                connection.rollback();
+            } catch (SQLException exception) {
+                System.err.format("SQL State: %s\n%s", e.getSQLState(), e.getMessage());
+            }
+            System.err.format("SQL State: %s\n%s", e.getSQLState(), e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -85,14 +167,12 @@ public class JDBCUserDao implements UserDao {
 
     }
 
-    @Override
     public User findByLogin(String login) {
+
         try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_SELECT_BY_LOGIN)) {
             preparedStatement.setString(1, login);
 
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            return executeUserFromResultSet(resultSet);
+            return findUsersByPreparedStatement(preparedStatement).get(0);
 
         } catch (SQLException e) {
             System.err.format("SQL State: %s\n%s", e.getSQLState(), e.getMessage());
@@ -112,48 +192,41 @@ public class JDBCUserDao implements UserDao {
     }
 
     private void insertRoles(User entity) {
-        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_INSERT_ROLE)) {
-            for (Role role : entity.getRoles()) {
+
+        for (Role role : entity.getRoles()) {
+            try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_INSERT_ROLE)) {
                 preparedStatement.setLong(1, entity.getId());
                 preparedStatement.setString(2, role.name());
-
                 preparedStatement.executeUpdate();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+        }
+    }
 
+    private void deleteRoles(Long id) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_DELETE_ROLES_BY_USER_ID)) {
+            preparedStatement.setLong(1, id);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private User executeUserFromResultSet(ResultSet resultSet) throws SQLException {
+    private List<User> findUsersByPreparedStatement( PreparedStatement preparedStatement) throws SQLException {
+        Map<Long, User> users = new HashMap<>();
 
-        if (resultSet.next()) {
-            User user = new User();
+        ResultSet resultSet = preparedStatement.executeQuery();
 
-            user.setId(resultSet.getLong("id"));
-            user.setSurname(resultSet.getString("surname"));
-            user.setName(resultSet.getString("name"));
-            user.setPatronymic(resultSet.getString("patronymic"));
-            user.setLogin(resultSet.getString("login"));
-            user.setEmail(resultSet.getString("email"));
-            user.setPassword(resultSet.getString("password"));
+        UserMapper userMapper = new UserMapper();
 
-            user.setRoles(executeRolesFromResultSet(resultSet));
-
-            return user;
-        } else {
-            return null;
-        }
-    }
-
-    private Set<Role> executeRolesFromResultSet(ResultSet resultSet) throws SQLException {
-        Set<Role> result = new HashSet<>();
-
-        resultSet.beforeFirst();
         while (resultSet.next()) {
-            result.add(Role.valueOf(resultSet.getString("roles")));
+            User user = userMapper.extractFromResultSet(resultSet);
+            Role role = userMapper.extractRoleFromResultSet(resultSet);
+            user = userMapper.makeUnique(users, user);
+            user.getRoles().add(role);
         }
+        return new ArrayList<>(users.values());
 
-        return result;
     }
+
 }
