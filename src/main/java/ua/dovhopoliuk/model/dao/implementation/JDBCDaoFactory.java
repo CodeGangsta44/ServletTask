@@ -25,17 +25,17 @@ public class JDBCDaoFactory extends DaoFactory {
 
     @Override
     public ReportRequestDao createReportRequestDao() {
-        return null;
+        return new JDBCReportRequestDao(getConnection());
     }
 
     @Override
     public NotificationDao createNotificationDao() {
-        return null;
+        return new JDBCNotificationDao(getConnection());
     }
 
     @Override
     public VoteDao createVoteDao() {
-        return null;
+        return new JDBCVoteDao(getConnection());
     }
 
     private Connection getConnection(){

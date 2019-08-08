@@ -2,6 +2,7 @@ package ua.dovhopoliuk.model.dao.implementation;
 
 import ua.dovhopoliuk.model.dao.ConferenceDao;
 import ua.dovhopoliuk.model.dao.DaoFactory;
+import ua.dovhopoliuk.model.dao.UserDao;
 import ua.dovhopoliuk.model.dao.mapper.ConferenceMapper;
 import ua.dovhopoliuk.model.dao.mapper.ReportMapper;
 import ua.dovhopoliuk.model.dao.mapper.UserMapper;
@@ -130,12 +131,13 @@ public class JDBCConferenceDao implements ConferenceDao {
 
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_UPDATE_CONFERENCE_BY_ID)) {
-            connection.setAutoCommit(false);
 
             fillPreparedStatement(entity, preparedStatement);
-            preparedStatement.setLong(7, entity.getId());
-            preparedStatement.executeUpdate();
+            preparedStatement.setLong(8, entity.getId());
 
+            connection.setAutoCommit(false);
+
+            preparedStatement.executeUpdate();
             deleteRegisteredUsers(usersToDelete, entity.getId());
             insertRegisteredUsers(usersToInsert, entity.getId());
 
@@ -223,14 +225,16 @@ public class JDBCConferenceDao implements ConferenceDao {
         ConferenceMapper conferenceMapper = new ConferenceMapper();
         ReportMapper reportMapper = new ReportMapper();
 
+        UserDao userDao = daoFactory.createUserDao();
+
         while (resultSet.next()) {
             Conference conference = conferenceMapper.extractFromResultSet(resultSet);
             conference = conferenceMapper.makeUnique(conferences, conference);
 
-            User user = daoFactory.createUserDao().findById(resultSet.getLong("user_id"));
+            User user = userDao.findById(resultSet.getLong("user_id"));
             user = userMapper.makeUnique(users, user);
 
-            User speaker = daoFactory.createUserDao().findById(resultSet.getLong("speaker_id"));
+            User speaker = userDao.findById(resultSet.getLong("speaker_id"));
             speaker = userMapper.makeUnique(users, speaker);
 
             Report report = reportMapper.extractFromResultSet(resultSet);

@@ -117,10 +117,12 @@ public class JDBCUserDao implements UserDao {
     public void update(User entity) {
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_UPDATE_USER_BY_ID)) {
-            connection.setAutoCommit(false);
 
             fillPreparedStatement(entity, preparedStatement);
             preparedStatement.setLong(7, entity.getId());
+
+            connection.setAutoCommit(false);
+
             preparedStatement.executeUpdate();
             deleteRoles(entity.getId());
             insertRoles(entity);
@@ -142,20 +144,11 @@ public class JDBCUserDao implements UserDao {
     @Override
     public void delete(Long id) {
         try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_DELETE_USER_BY_ID)) {
-            connection.setAutoCommit(false);
             preparedStatement.setLong(1, id);
 
-            deleteRoles(id);
             preparedStatement.executeUpdate();
 
-            connection.commit();
-
         } catch (SQLException e) {
-            try {
-                connection.rollback();
-            } catch (SQLException exception) {
-                System.err.format("SQL State: %s\n%s", e.getSQLState(), e.getMessage());
-            }
             System.err.format("SQL State: %s\n%s", e.getSQLState(), e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
@@ -164,9 +157,10 @@ public class JDBCUserDao implements UserDao {
 
     @Override
     public void close() throws Exception {
-
+        connection.close();
     }
 
+    @Override
     public User findByLogin(String login) {
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_SELECT_BY_LOGIN)) {

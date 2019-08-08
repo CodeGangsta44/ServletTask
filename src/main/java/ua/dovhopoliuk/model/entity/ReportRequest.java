@@ -2,7 +2,9 @@ package ua.dovhopoliuk.model.entity;
 
 public class ReportRequest {
     private Long id;
-    private Report report;
+    private String topic;
+    private Conference conference;
+    private User speaker;
 
     private boolean approvedBySpeaker;
     private boolean approvedByModerator;
@@ -15,12 +17,28 @@ public class ReportRequest {
         this.id = id;
     }
 
-    public Report getReport() {
-        return report;
+    public String getTopic() {
+        return topic;
     }
 
-    public void setReport(Report report) {
-        this.report = report;
+    public void setTopic(String topic) {
+        this.topic = topic;
+    }
+
+    public Conference getConference() {
+        return conference;
+    }
+
+    public void setConference(Conference conference) {
+        this.conference = conference;
+    }
+
+    public User getSpeaker() {
+        return speaker;
+    }
+
+    public void setSpeaker(User speaker) {
+        this.speaker = speaker;
     }
 
     public boolean isApprovedBySpeaker() {

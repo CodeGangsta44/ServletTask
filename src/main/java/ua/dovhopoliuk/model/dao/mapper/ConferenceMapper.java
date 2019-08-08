@@ -11,18 +11,18 @@ import java.util.TimeZone;
 
 public class ConferenceMapper implements ObjectMapper<Conference> {
     @Override
-    public Conference extractFromResultSet(ResultSet rs) throws SQLException {
+    public Conference extractFromResultSet(ResultSet resultSet) throws SQLException {
 
         Conference conference = new Conference();
 
-        conference.setId(rs.getLong("conference_id"));
-        conference.setTopic(rs.getString("conference_topic"));
-        conference.setEventDateTime(rs.getTimestamp("event_date_time").toLocalDateTime());
-        conference.setEventAddress(rs.getString("event_address"));
-        conference.setDescription(rs.getString("description"));
-        conference.setApproved(rs.getBoolean("approved"));
-        conference.setFinished(rs.getBoolean("finished"));
-        conference.setNumberOfVisitedGuests(rs.getLong("number_of_visited_guests"));
+        conference.setId(resultSet.getLong("conference_id"));
+        conference.setTopic(resultSet.getString("conference_topic"));
+        conference.setEventDateTime(resultSet.getTimestamp("event_date_time").toLocalDateTime());
+        conference.setEventAddress(resultSet.getString("event_address"));
+        conference.setDescription(resultSet.getString("description"));
+        conference.setApproved(resultSet.getBoolean("approved"));
+        conference.setFinished(resultSet.getBoolean("finished"));
+        conference.setNumberOfVisitedGuests(resultSet.getLong("number_of_visited_guests"));
 
         return conference;
     }
