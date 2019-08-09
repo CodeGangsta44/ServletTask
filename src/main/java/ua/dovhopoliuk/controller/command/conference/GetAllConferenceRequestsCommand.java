@@ -3,13 +3,12 @@ package ua.dovhopoliuk.controller.command.conference;
 import ua.dovhopoliuk.controller.command.Command;
 import ua.dovhopoliuk.controller.command.utility.CommandJsonUtility;
 import ua.dovhopoliuk.model.dto.ConferenceDTO;
-import ua.dovhopoliuk.model.dto.RegisteredGuestDTO;
 import ua.dovhopoliuk.model.service.ConferenceService;
 
 import javax.servlet.http.HttpServletRequest;
 
 public class GetAllConferenceRequestsCommand implements Command {
-    private CommandJsonUtility<ConferenceDTO[]> ConferenceDTOArrayCommandJsonUtility =
+    private CommandJsonUtility<ConferenceDTO[]> conferenceDTOArrayCommandJsonUtility =
             new CommandJsonUtility<>(ConferenceDTO[].class);
 
     private ConferenceService conferenceService;
@@ -23,7 +22,7 @@ public class GetAllConferenceRequestsCommand implements Command {
         ConferenceDTO[] conferenceRequests = conferenceService.getAllNotApprovedConferences().stream()
                 .map(ConferenceDTO::new).toArray(ConferenceDTO[]::new);
 
-        return ConferenceDTOArrayCommandJsonUtility.toJson(conferenceRequests);
+        return conferenceDTOArrayCommandJsonUtility.toJson(conferenceRequests);
     }
 }
 

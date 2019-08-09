@@ -8,7 +8,7 @@ import ua.dovhopoliuk.model.service.ConferenceService;
 import javax.servlet.http.HttpServletRequest;
 
 public class GetConferenceByIdCommand implements Command {
-    private CommandJsonUtility<ConferenceDTO> ConferenceDTOCommandJsonUtility =
+    private CommandJsonUtility<ConferenceDTO> conferenceDTOCommandJsonUtility =
             new CommandJsonUtility<>(ConferenceDTO.class);
 
     private ConferenceService conferenceService;
@@ -24,6 +24,6 @@ public class GetConferenceByIdCommand implements Command {
 
         ConferenceDTO conference = new ConferenceDTO(conferenceService.getConferenceById(conferenceId));
 
-        return ConferenceDTOCommandJsonUtility.toJson(conference);
+        return conferenceDTOCommandJsonUtility.toJson(conference);
     }
 }

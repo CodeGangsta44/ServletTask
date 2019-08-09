@@ -8,7 +8,7 @@ import ua.dovhopoliuk.model.service.ConferenceService;
 import javax.servlet.http.HttpServletRequest;
 
 public class FinishConferenceByIdCommand implements Command {
-    private CommandJsonUtility<Long> LongCommandJsonUtility =
+    private CommandJsonUtility<Long> longCommandJsonUtility =
             new CommandJsonUtility<>(Long.class);
     private ConferenceService conferenceService;
 
@@ -22,7 +22,7 @@ public class FinishConferenceByIdCommand implements Command {
         Long conferenceId = Long.parseLong(path.replaceFirst(".*/conferences", "")
                 .replace("/finish", ""));
 
-        Long numberOfVisitedGuests = LongCommandJsonUtility
+        Long numberOfVisitedGuests = longCommandJsonUtility
                 .fromJson(CommandRequestBodyReaderUtility
                         .readRequestBody(request));
 

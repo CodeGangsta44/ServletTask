@@ -8,7 +8,7 @@ import ua.dovhopoliuk.model.service.ConferenceService;
 import javax.servlet.http.HttpServletRequest;
 
 public class GetRegisteredUsersByConferenceIdCommand implements Command {
-    private CommandJsonUtility<RegisteredGuestDTO[]> RegisteredGuestDTOArrayCommandJsonUtility =
+    private CommandJsonUtility<RegisteredGuestDTO[]> registeredGuestDTOArrayCommandJsonUtility =
             new CommandJsonUtility<>(RegisteredGuestDTO[].class);
 
     private ConferenceService conferenceService;
@@ -25,7 +25,7 @@ public class GetRegisteredUsersByConferenceIdCommand implements Command {
         RegisteredGuestDTO[] registeredGuest = conferenceService.getRegisteredUsers(conferenceId).stream()
                 .map(RegisteredGuestDTO::new).toArray(RegisteredGuestDTO[]::new);
 
-        return RegisteredGuestDTOArrayCommandJsonUtility.toJson(registeredGuest);
+        return registeredGuestDTOArrayCommandJsonUtility.toJson(registeredGuest);
     }
 }
 

@@ -8,7 +8,7 @@ import ua.dovhopoliuk.model.service.UserService;
 import javax.servlet.http.HttpServletRequest;
 
 public class GetAllUsersCommand implements Command {
-    private CommandJsonUtility<UserDTO[]> UserDTOArrayCommandJsonUtility =
+    private CommandJsonUtility<UserDTO[]> userDTOArrayCommandJsonUtility =
             new CommandJsonUtility<>(UserDTO[].class);
 
     private UserService userService;
@@ -21,6 +21,6 @@ public class GetAllUsersCommand implements Command {
         UserDTO[] users = userService.getAllUsers().stream()
                 .map(UserDTO::new).toArray(UserDTO[]::new);
 
-        return UserDTOArrayCommandJsonUtility.toJson(users);
+        return userDTOArrayCommandJsonUtility.toJson(users);
     }
 }

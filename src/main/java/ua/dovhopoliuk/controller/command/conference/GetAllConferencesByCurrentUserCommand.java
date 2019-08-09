@@ -8,7 +8,7 @@ import ua.dovhopoliuk.model.service.ConferenceService;
 import javax.servlet.http.HttpServletRequest;
 
 public class GetAllConferencesByCurrentUserCommand implements Command {
-    private CommandJsonUtility<ConferenceDTO[]> ConferenceDTOArrayCommandJsonUtility =
+    private CommandJsonUtility<ConferenceDTO[]> conferenceDTOArrayCommandJsonUtility =
             new CommandJsonUtility<>(ConferenceDTO[].class);
 
     private ConferenceService conferenceService;
@@ -22,7 +22,7 @@ public class GetAllConferencesByCurrentUserCommand implements Command {
         ConferenceDTO[] conferences = conferenceService.getAllConferencesByCurrentUser(request).stream()
                 .map(ConferenceDTO::new).toArray(ConferenceDTO[]::new);
 
-        return ConferenceDTOArrayCommandJsonUtility.toJson(conferences);
+        return conferenceDTOArrayCommandJsonUtility.toJson(conferences);
     }
 }
 

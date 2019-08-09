@@ -8,7 +8,7 @@ import ua.dovhopoliuk.model.service.UserService;
 import javax.servlet.http.HttpServletRequest;
 
 public class GetCurrentUserCommand implements Command {
-    private CommandJsonUtility<UserDTO> UserDTOCommandJsonUtility =
+    private CommandJsonUtility<UserDTO> userDTOCommandJsonUtility =
             new CommandJsonUtility<>(UserDTO.class);
 
     private UserService userService;
@@ -19,6 +19,6 @@ public class GetCurrentUserCommand implements Command {
     @Override
     public String execute(HttpServletRequest request) {
         UserDTO user = new UserDTO(userService.getCurrentUser(request));
-        return UserDTOCommandJsonUtility.toJson(user);
+        return userDTOCommandJsonUtility.toJson(user);
     }
 }

@@ -151,7 +151,9 @@ public class UserService {
         daoFactory.createUserDao().delete(user.getId());
     }
 
-    public SpeakerStatisticsDTO getSpeakerStatistics(User speaker) {
+    public SpeakerStatisticsDTO getSpeakerStatistics(Long userId) {
+        User speaker = daoFactory.createUserDao().findById(userId);
+
         List<Report> speakerReports = daoFactory.createReportDao().findAll().stream()
                 .filter(report -> report.getSpeaker().equals(speaker))
                 .collect(Collectors.toList());

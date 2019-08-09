@@ -9,11 +9,11 @@ import java.util.HashMap;
 
 public class UsersPostCommand implements Command {
     private CommandJsonUtility<RegNoteDTO> regNoteDTOCommandJsonUtility = new CommandJsonUtility<>(RegNoteDTO.class);
-    private final UserService userService = new UserService();
+//    private final UserService userService = new UserService();
     private HashMap<String, Command> commands = new HashMap<>();
 
     {
-        commands.put("", new RegisterUserCommand());
+//        commands.put("", new RegisterUserCommand());
         commands.put("authenticate", new AuthenticateCommand());
     }
 

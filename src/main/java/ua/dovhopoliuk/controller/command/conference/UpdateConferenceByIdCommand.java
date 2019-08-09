@@ -9,7 +9,7 @@ import ua.dovhopoliuk.model.service.ConferenceService;
 import javax.servlet.http.HttpServletRequest;
 
 public class UpdateConferenceByIdCommand implements Command {
-    private CommandJsonUtility<Conference> ConferenceCommandJsonUtility =
+    private CommandJsonUtility<Conference> conferenceCommandJsonUtility =
             new CommandJsonUtility<>(Conference.class);
 
     private ConferenceService conferenceService;
@@ -22,7 +22,7 @@ public class UpdateConferenceByIdCommand implements Command {
         String path = request.getRequestURI();
         Long conferenceId = Long.parseLong(path.replaceFirst(".*/conferences", ""));
 
-        Conference conference = ConferenceCommandJsonUtility
+        Conference conference = conferenceCommandJsonUtility
                 .fromJson(CommandRequestBodyReaderUtility
                         .readRequestBody(request));
 

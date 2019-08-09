@@ -4,7 +4,6 @@ import ua.dovhopoliuk.controller.command.Command;
 import ua.dovhopoliuk.controller.command.utility.CommandJsonUtility;
 import ua.dovhopoliuk.controller.command.utility.CommandRequestBodyReaderUtility;
 import ua.dovhopoliuk.model.dto.ConferenceDTO;
-import ua.dovhopoliuk.model.dto.RegNoteDTO;
 import ua.dovhopoliuk.model.entity.Conference;
 import ua.dovhopoliuk.model.service.ConferenceService;
 
@@ -13,7 +12,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class AddNewConferenceCommand implements Command {
-    private CommandJsonUtility<ConferenceDTO> ConferenceDTOCommandJsonUtility = new CommandJsonUtility<>(ConferenceDTO.class);
+    private CommandJsonUtility<ConferenceDTO> conferenceDTOCommandJsonUtility = new CommandJsonUtility<>(ConferenceDTO.class);
     private ConferenceService conferenceService;
 
     public AddNewConferenceCommand(ConferenceService conferenceService) {
@@ -22,7 +21,7 @@ public class AddNewConferenceCommand implements Command {
 
     @Override
     public String execute(HttpServletRequest request) {
-        ConferenceDTO conferenceDTO = ConferenceDTOCommandJsonUtility
+        ConferenceDTO conferenceDTO = conferenceDTOCommandJsonUtility
                 .fromJson(CommandRequestBodyReaderUtility.readRequestBody(request));
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");

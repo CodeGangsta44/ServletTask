@@ -9,7 +9,7 @@ import ua.dovhopoliuk.model.service.ConferenceService;
 import javax.servlet.http.HttpServletRequest;
 
 public class ChangeRegistrationOfCurrentUserByConferenceIdCommand implements Command {
-    private CommandJsonUtility<FullConferenceDTO> FullConferenceDTOCommandJsonUtility =
+    private CommandJsonUtility<FullConferenceDTO> fullConferenceDTOCommandJsonUtility =
             new CommandJsonUtility<>(FullConferenceDTO.class);
 
     private ConferenceService conferenceService;
@@ -33,6 +33,6 @@ public class ChangeRegistrationOfCurrentUserByConferenceIdCommand implements Com
         Conference conference = conferenceService.getConferenceById(conferenceId);
         boolean registered = conferenceService.isUserRegistered(request, conference);
 
-        return FullConferenceDTOCommandJsonUtility.toJson(new FullConferenceDTO(conference, registered));
+        return fullConferenceDTOCommandJsonUtility.toJson(new FullConferenceDTO(conference, registered));
     }
 }
