@@ -1,8 +1,8 @@
 package ua.dovhopoliuk.controller.command;
 
+import ua.dovhopoliuk.controller.command.user.post.AuthenticateCommand;
 import ua.dovhopoliuk.controller.command.utility.CommandJsonUtility;
 import ua.dovhopoliuk.model.dto.RegNoteDTO;
-import ua.dovhopoliuk.model.service.UserService;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
