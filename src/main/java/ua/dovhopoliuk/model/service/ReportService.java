@@ -31,12 +31,12 @@ public class ReportService {
         daoFactory.createReportDao().update(report);
     }
 
-    public void deleteReport(Report report) {
+    public void deleteReport(Long reportId) {
 
-        if (!Objects.isNull(report.getConference())) {
-            report.getConference().getReports().remove(report);
-        }
+//        if (!Objects.isNull(report.getConference())) {
+//            report.getConference().getReports().remove(report);
+//        }
 
-        daoFactory.createReportDao().delete(report.getId());
+        daoFactory.createReportDao().delete(reportId);
     }
 }

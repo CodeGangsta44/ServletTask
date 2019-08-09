@@ -1,4 +1,4 @@
 package ua.dovhopoliuk.controller.command.page;
 
-public class ConderencesPageCommand {
+public class ConferencesPageCommand {
 }

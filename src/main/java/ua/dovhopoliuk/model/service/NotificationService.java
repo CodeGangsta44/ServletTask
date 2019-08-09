@@ -29,7 +29,7 @@ public class NotificationService {
                 .collect(Collectors.toList());
     }
 
-    public void deleteNotification(Notification notification) {
-        daoFactory.createNotificationDao().delete(notification.getId());
+    public void deleteNotification(Long notificationId) {
+        daoFactory.createNotificationDao().delete(notificationId);
     }
 }

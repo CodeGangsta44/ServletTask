@@ -23,7 +23,7 @@ public class ChangeRegistrationOfCurrentUserByConferenceIdCommand implements Com
     public String execute(HttpServletRequest request) {
         String path = request.getRequestURI();
 
-        Long conferenceId = Long.parseLong(path.replaceFirst(".*/conferences", "")
+        Long conferenceId = Long.parseLong(path.replaceFirst(".*/conferences/", "")
                 .replace("/changeRegistration", ""));
 
         System.out.println(conferenceId);

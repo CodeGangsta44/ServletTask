@@ -116,7 +116,9 @@ public class UserService {
         target.setRoles(source.getRoles());
     }
 
-    public void deleteUser(User user) {
+    public void deleteUser(Long userId) {
+        User user = daoFactory.createUserDao().findById(userId);
+
         List<Report> userReports = daoFactory.createReportDao().findAll().stream()
                 .filter(report -> report.getSpeaker().equals(user))
                 .collect(Collectors.toList());

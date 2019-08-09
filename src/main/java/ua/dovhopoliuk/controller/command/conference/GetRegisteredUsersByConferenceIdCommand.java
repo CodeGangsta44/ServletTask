@@ -19,7 +19,7 @@ public class GetRegisteredUsersByConferenceIdCommand implements Command {
     @Override
     public String execute(HttpServletRequest request) {
         String path = request.getRequestURI();
-        Long conferenceId = Long.parseLong(path.replaceFirst(".*/conferences", "")
+        Long conferenceId = Long.parseLong(path.replaceFirst(".*/conferences/", "")
                 .replace("/registeredGuests", ""));
 
         RegisteredGuestDTO[] registeredGuest = conferenceService.getRegisteredUsers(conferenceId).stream()

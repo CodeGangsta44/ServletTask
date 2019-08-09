@@ -20,7 +20,7 @@ public class GetConferenceByIdCommand implements Command {
     @Override
     public String execute(HttpServletRequest request) {
         String path = request.getRequestURI();
-        Long conferenceId = Long.parseLong(path.replaceFirst(".*/conferences", ""));
+        Long conferenceId = Long.parseLong(path.replaceFirst(".*/conferences/", ""));
 
         ConferenceDTO conference = new ConferenceDTO(conferenceService.getConferenceById(conferenceId));
 

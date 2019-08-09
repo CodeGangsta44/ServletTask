@@ -18,7 +18,12 @@ public class ReportRequestService {
         this.userService = userService;
     }
 
-    public void createReportRequest(HttpServletRequest request, ReportRequest reportRequest) {
+    public void createReportRequest(HttpServletRequest request, ReportRequest reportRequest, Long conferenceId) {
+
+        reportRequest.setConference(daoFactory
+                .createConferenceDao()
+                .findById(conferenceId));
+
         if (Objects.isNull(reportRequest.getSpeaker())) {
             reportRequest.setSpeaker(userService.getCurrentUser(request));
         }
@@ -46,7 +51,17 @@ public class ReportRequestService {
 //                .collect(Collectors.toList());
     }
 
-    public void approve(HttpServletRequest request,ReportRequest reportRequest) {
+    public void approve(HttpServletRequest request, Long reportRequestId) {
+        ReportRequest reportRequest = daoFactory.createReportRequestDao().findById(reportRequestId);
+        approve(request, reportRequest);
+    }
+
+    public void reject(HttpServletRequest request, Long reportRequestId) {
+        ReportRequest reportRequest = daoFactory.createReportRequestDao().findById(reportRequestId);
+        reject(request, reportRequest);
+    }
+
+    public void approve(HttpServletRequest request, ReportRequest reportRequest) {
         User currentUser = userService.getCurrentUser(request);
 
         if (currentUser.getRoles().contains(Role.MODER)) {
@@ -83,9 +98,11 @@ public class ReportRequestService {
         daoFactory.createReportRequestDao().delete(reportRequest.getId());
     }
 
-    public void reject(ReportRequest reportRequest) {
+    public void reject(HttpServletRequest request, ReportRequest reportRequest) {
         Conference conference = reportRequest.getConference();
         User speaker = reportRequest.getSpeaker();
+
+        User currentUser = userService.getCurrentUser(request);
 
         Notification notification = createNotification(reportRequest, speaker, conference, "rejected");
 

@@ -19,7 +19,7 @@ public class ProcessRequestByConferenceIdCommand implements Command {
     @Override
     public String execute(HttpServletRequest request) {
         String path = request.getRequestURI();
-        Long conferenceId = Long.parseLong(path.replaceFirst(".*/conferences", "")
+        Long conferenceId = Long.parseLong(path.replaceFirst(".*/conferences/", "")
                 .replace("/processRequest", ""));
 
         Boolean answer = booleanCommandJsonUtility

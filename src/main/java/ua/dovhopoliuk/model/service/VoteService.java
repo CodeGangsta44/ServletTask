@@ -18,7 +18,9 @@ public class VoteService {
         this.userService = userService;
     }
 
-    public List<Vote> getAllVotesBySpeaker(User speaker) {
+    public List<Vote> getAllVotesBySpeaker(Long speakerId) {
+        User speaker = daoFactory.createUserDao().findById(speakerId);
+
         return daoFactory.createVoteDao().findAll().stream()
                 .filter(vote -> vote.getSpeaker().equals(speaker))
                 .collect(Collectors.toList());
@@ -26,7 +28,8 @@ public class VoteService {
 //        return voteRepository.findAllBySpeaker(speaker);
     }
 
-    public void saveVote(HttpServletRequest request, User speaker, int mark) {
+    public void saveVote(HttpServletRequest request, Long speakerId, int mark) {
+        User speaker = daoFactory.createUserDao().findById(speakerId);
         User user = userService.getCurrentUser(request);
 
         Vote currentVote = daoFactory.createVoteDao().findAll().stream()
@@ -49,8 +52,9 @@ public class VoteService {
         }
     }
 
-    public int getVoteOfCurrentUser(HttpServletRequest request, User speaker) {
+    public int getVoteOfCurrentUser(HttpServletRequest request, Long speakerId) {
         User user = userService.getCurrentUser(request);
+        User speaker = daoFactory.createUserDao().findById(speakerId);
 
         Vote currentVote = daoFactory.createVoteDao().findAll().stream()
                 .filter(vote -> vote.getSpeaker().equals(speaker) && vote.getUser().equals(user))
