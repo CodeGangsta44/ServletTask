@@ -1,5 +1,7 @@
 package ua.dovhopoliuk.controller.command;
 
+import ua.dovhopoliuk.controller.command.utility.CommandBCryptUtility;
+import ua.dovhopoliuk.controller.command.utility.CommandSessionUtility;
 import ua.dovhopoliuk.model.entity.User;
 import ua.dovhopoliuk.model.service.UserService;
 

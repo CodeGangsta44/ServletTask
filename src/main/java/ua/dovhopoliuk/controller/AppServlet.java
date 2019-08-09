@@ -1,6 +1,7 @@
 package ua.dovhopoliuk.controller;
 
 import ua.dovhopoliuk.controller.command.*;
+import ua.dovhopoliuk.controller.command.utility.CommandJsonUtility;
 import ua.dovhopoliuk.model.exception.RequestException;
 
 import javax.servlet.ServletConfig;

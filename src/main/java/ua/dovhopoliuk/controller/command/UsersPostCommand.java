@@ -1,18 +1,11 @@
 package ua.dovhopoliuk.controller.command;
 
+import ua.dovhopoliuk.controller.command.utility.CommandJsonUtility;
 import ua.dovhopoliuk.model.dto.RegNoteDTO;
-import ua.dovhopoliuk.model.entity.Role;
-import ua.dovhopoliuk.model.entity.User;
-import ua.dovhopoliuk.model.exception.LoginNotUniqueException;
-import ua.dovhopoliuk.model.exception.RequestException;
 import ua.dovhopoliuk.model.service.UserService;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
 
 public class UsersPostCommand implements Command {
     private CommandJsonUtility<RegNoteDTO> regNoteDTOCommandJsonUtility = new CommandJsonUtility<>(RegNoteDTO.class);

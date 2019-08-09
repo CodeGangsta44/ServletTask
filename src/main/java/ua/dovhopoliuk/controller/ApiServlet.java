@@ -1,6 +1,7 @@
 package ua.dovhopoliuk.controller;
 
 import ua.dovhopoliuk.controller.command.*;
+import ua.dovhopoliuk.controller.command.utility.CommandJsonUtility;
 import ua.dovhopoliuk.model.exception.RequestException;
 
 import javax.servlet.ServletConfig;
@@ -11,7 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 
 @WebServlet(name = "ApiServlet")

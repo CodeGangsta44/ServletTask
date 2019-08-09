@@ -1,4 +1,4 @@
-package ua.dovhopoliuk.controller.command;
+package ua.dovhopoliuk.controller.command.utility;
 
 import org.mindrot.jbcrypt.BCrypt;
 

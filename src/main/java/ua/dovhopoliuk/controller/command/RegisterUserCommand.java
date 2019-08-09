@@ -1,6 +1,8 @@
 package ua.dovhopoliuk.controller.command;
 
-import org.mindrot.jbcrypt.BCrypt;
+import ua.dovhopoliuk.controller.command.utility.CommandBCryptUtility;
+import ua.dovhopoliuk.controller.command.utility.CommandBundleUtility;
+import ua.dovhopoliuk.controller.command.utility.CommandJsonUtility;
 import ua.dovhopoliuk.model.dto.RegNoteDTO;
 import ua.dovhopoliuk.model.entity.Role;
 import ua.dovhopoliuk.model.entity.User;
