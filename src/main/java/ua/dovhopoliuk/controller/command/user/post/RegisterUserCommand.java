@@ -44,11 +44,16 @@ public class RegisterUserCommand implements Command {
             e.setNote(regNoteDTO);
 
             String message = new CommandJsonUtility<>(LoginNotUniqueException.class).toJson(e);
+            System.out.println("In catch bloc: " + message);
             throw new RequestException(message);
         }
 
+        System.out.println("Getting message from bundle:");
+        System.out.println(CommandBundleUtility
+                .getMessage(request, "messages", "registration.success"));
+
         return  CommandBundleUtility
-                .getMessage(request, "message", "registration.success");
+                .getMessage(request, "messages", "registration.success");
     }
 
     private User createUserFromRegNoteDTO(RegNoteDTO regNoteDTO){

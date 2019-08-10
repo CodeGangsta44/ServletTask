@@ -28,7 +28,7 @@ public class GetNotificationCommand implements Command {
     @Override
     public String execute(HttpServletRequest request) {
         String path = request.getRequestURI();
-        path = path.replaceFirst(".*/notifications/", "").replaceFirst("\\d+", "id");
+        path = path.replaceFirst(".*/notifications/?", "").replaceFirst("\\d+", "id");
 
         Command command = commands.getOrDefault(path, (e)->"redirect:/");
         return command.execute(request);

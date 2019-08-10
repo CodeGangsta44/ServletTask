@@ -2,9 +2,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page isELIgnored="false" %>
-
 <!DOCTYPE html>
-<html lang="${sessionScope.lang}">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <title><fmt:message key="form.login.name"/></title>
@@ -15,7 +14,6 @@
 <body>
 <fmt:setLocale value="${sessionScope.lang}" />
 <fmt:setBundle basename="messages"/>
-
 <div class="container" style="margin-top: 60px">
     <div class="row justify-content-center">
         <div class="col-md-8 col-md-offset-2">
@@ -28,8 +26,9 @@
             <c:if test="${param.error ne null}" >
                 <div class="alert alert-warning" role="alert"><fmt:message key="login.error"/></div>
             </c:if>
-
-            <form method="post" action="${pageContext.request.contextPath}/app/api/users/authenticate" style="margin-bottom: 30px" name="form" autocomplete="off" >
+            <form method="post"
+                  action="${pageContext.request.contextPath}/app/api/users/authenticate"
+                  style="margin-bottom: 30px" name="form" autocomplete="off" >
                 <div class="form-group">
                     <label id="inputLoginLabel" for="exampleInputLogin"><fmt:message key="label.login"/></label>
                     <input type="text"
@@ -51,7 +50,7 @@
                 </button>
             </form>
             <div class="alert alert-info" role="alert">
-                <a href="/app/registration"><fmt:message key="title.registration"/></a>
+                <a href="/registration"><fmt:message key="title.registration"/></a>
 
                 <span style="float: right">
                         <a href="?lang=en"><fmt:message key="language.en"/></a>

@@ -31,7 +31,7 @@ angular.module("registration_form",[])
             console.log(JSON.stringify($scope.auth));
             $http({
                 method: "POST",
-                url: "/api/users",
+                url: "app/api/users",
                 data: JSON.stringify($scope.auth),
                 headers: { "Content-Type" : "application/json" }
             }).then(
@@ -44,7 +44,7 @@ angular.module("registration_form",[])
                         });
 
                 resultMessageEl.className = 'alert alert-success';
-                resultMessageEl.innerText = data.data;
+                resultMessageEl.innerText = JSON.parse(data.data);
                 resultMessageEl.style.visibility='visible';
         },
             (error) => {

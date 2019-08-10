@@ -1,6 +1,7 @@
 package ua.dovhopoliuk.controller.command.report;
 
 import ua.dovhopoliuk.controller.command.Command;
+import ua.dovhopoliuk.controller.command.report.delete.DeleteReportByIdCommand;
 import ua.dovhopoliuk.model.service.ReportService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,13 +17,13 @@ public class DeleteReportCommand implements Command {
 
         commands = new HashMap<>();
 
-        commands.put("id", new DeleteReportCommand(reportService));
+        commands.put("id", new DeleteReportByIdCommand(reportService));
     }
 
     @Override
     public String execute(HttpServletRequest request) {
         String path = request.getRequestURI();
-        path = path.replaceFirst(".*/reports/", "").replaceFirst("\\d+", "id");
+        path = path.replaceFirst(".*/reports/?", "").replaceFirst("\\d+", "id");
 
         Command command = commands.getOrDefault(path, (e)->"redirect:/");
         return command.execute(request);

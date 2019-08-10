@@ -15,15 +15,12 @@ public class ConferenceService {
     private final DaoFactory daoFactory = DaoFactory.getInstance();
     private UserService userService;
     private ReportService reportService;
-    private ReportRequestService reportRequestService;
 
-    ConferenceService(UserService userService,
-                      ReportService reportService,
-                      ReportRequestService reportRequestService) {
+    public ConferenceService(UserService userService,
+                      ReportService reportService) {
 
         this.userService = userService;
         this.reportService = reportService;
-        this.reportRequestService = reportRequestService;
     }
 
     public List<Conference> getAllValidConferences() {

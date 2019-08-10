@@ -26,7 +26,7 @@ public class AuthenticateCommand implements Command {
             return "redirect:/login?error";
         } else {
             CommandSessionUtility.setUserForSession(request, user);
-            return "redirect:/home";
+            return "redirect:/";
         }
     }
 }

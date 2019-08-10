@@ -125,7 +125,7 @@ public class UserService {
         // TODO: implement this method
 //        List<Report> userReports = reportRepository.findAllBySpeaker(user);
 
-        userReports.forEach(reportService::deleteReport);
+        userReports.forEach(report -> reportService.deleteReport(report.getId()));
 
         List<Conference> userConferences = daoFactory.createConferenceDao().findAll().stream()
                 .filter(conference -> conference.getRegisteredGuests().contains(user))

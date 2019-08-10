@@ -2,9 +2,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page isELIgnored="false" %>
-
 <!DOCTYPE html>
-<html lang="${sessionScope.lang}">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <title><fmt:message key="title.registration"/></title>
@@ -18,9 +17,11 @@
 <body ng-app="registration_form" ng-controller="AppCtrl">
 <fmt:setLocale value="${sessionScope.lang}" />
 <fmt:setBundle basename="messages"/>
+
 <div class="container" style="margin-top: 60px">
     <div class="row justify-content-center">
         <div class="col-md-8 col-md-offset-2">
+            <%@include file="fragments/header.jsp" %>
 
             <div class="alert alert-success" role="alert" id="resultMessage" style="visibility: hidden"></div>
             <h2 class="page-header"><fmt:message key="form.registration.name"/></h2>
@@ -79,17 +80,20 @@
                            required
                            ng-model="auth.password">
                 </div>
+                <div class="form-group">
+                    <label id="inputIsSpeakerLabel" for="exampleInputIsSpeaker"><fmt:message key="label.speaker"/></label>
+                    <input type="checkbox"
+                           class="form-control"
+                           id="exampleInputIsSpeaker"
+                           placeholder="<fmt:message key="label.speaker"/>"
+                           ng-model="auth.isSpeaker"
+                           ng-true-value="true" ng-false-value="false">
+                </div>
                 <button type="submit" class="btn btn-success" style="margin-top:30px" ng-disabled="form.$invalid">
                     <fmt:message key="button.registration"/>
                 </button>
             </form>
-
-            <span style="float: right">
-                        <a href="?lang=en"><fmt:message key="language.en"/></a>
-                        |
-                        <a href="?lang=ua"><fmt:message key="language.ua"/></a>
-            </span>
-
+            <%@include file="fragments/footer.jsp" %>
         </div>
     </div>
 </div>

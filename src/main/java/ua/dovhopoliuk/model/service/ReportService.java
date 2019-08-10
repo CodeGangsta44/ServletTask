@@ -10,6 +10,8 @@ import java.util.Objects;
 public class ReportService {
     private final DaoFactory daoFactory = DaoFactory.getInstance();
 
+    public ReportService() {};
+
     public List<Report> getAllReports() {
         return daoFactory.createReportDao().findAll();
     }

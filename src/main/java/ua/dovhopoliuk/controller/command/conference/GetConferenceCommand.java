@@ -36,7 +36,7 @@ public class GetConferenceCommand implements Command {
     @Override
     public String execute(HttpServletRequest request) {
         String path = request.getRequestURI();
-        path = path.replaceFirst(".*/conferences/", "").replaceFirst("\\d+", "id");
+        path = path.replaceFirst(".*/conferences/?", "").replaceFirst("\\d+", "id");
 
         Command command = commands.getOrDefault(path, (e)->"redirect:/");
         return command.execute(request);

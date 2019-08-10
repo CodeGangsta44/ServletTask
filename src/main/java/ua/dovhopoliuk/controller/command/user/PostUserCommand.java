@@ -28,7 +28,13 @@ public class PostUserCommand implements Command {
     @Override
     public String execute(HttpServletRequest request) {
         String path = request.getRequestURI();
-        path = path.replaceFirst(".*/users/", "").replaceFirst("\\d+", "id");
+        System.out.println();
+        System.out.println(path);
+        path = path.replaceFirst(".*/users/?", "").replaceFirst("\\d+", "id");
+
+        System.out.println();
+        System.out.println(path.replaceFirst(".*/users/", ""));
+        System.out.println("In post command: " + path);
 
         Command command = commands.getOrDefault(path, (e)->"redirect:/");
         return command.execute(request);

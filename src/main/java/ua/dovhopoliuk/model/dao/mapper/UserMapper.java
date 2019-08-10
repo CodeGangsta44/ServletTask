@@ -5,6 +5,7 @@ import ua.dovhopoliuk.model.entity.User;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashSet;
 import java.util.Map;
 
 public class UserMapper implements ObjectMapper<User> {
@@ -19,6 +20,7 @@ public class UserMapper implements ObjectMapper<User> {
         user.setLogin(resultSet.getString("login"));
         user.setEmail(resultSet.getString("email"));
         user.setPassword(resultSet.getString("password"));
+        user.setRoles(new HashSet<>());
 
         return user;
     }
