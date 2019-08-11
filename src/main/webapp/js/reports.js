@@ -6,7 +6,7 @@ function showData(data, $scope) {
 }
 
 function showListOfReports(data, $scope) {
-    $scope.reports = JSON.parse(data.data);
+    $scope.reports = data.data;
 }
 
 function getListOfReports($http, $scope) {
@@ -48,7 +48,7 @@ app.config(function ($routeProvider) {
 //             (data)=>{
 //                 console.log('SUCCESS');
 //                 console.log(data);
-//                 $scope.conferences = JSON.parse(data.data);
+//                 $scope.conferences = data.data;
 //             },
 //             (error) => {
 //                 console.log('FAIL');
@@ -85,7 +85,7 @@ app.controller("ReportListCtrl", function ($scope, $http) {
 
                 getListOfReports($http, $scope);
                 resultMessageEl.className = 'alert alert-success';
-                resultMessageEl.innerText = JSON.parse(data.data);
+                resultMessageEl.innerText = data.data;
                 resultMessageEl.style.visibility='visible';
             },
             (error) => {

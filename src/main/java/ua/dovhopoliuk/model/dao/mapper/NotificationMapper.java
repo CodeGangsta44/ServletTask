@@ -4,6 +4,7 @@ import ua.dovhopoliuk.model.entity.Notification;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Map;
 
 public class NotificationMapper implements ObjectMapper<Notification> {
@@ -15,6 +16,8 @@ public class NotificationMapper implements ObjectMapper<Notification> {
         notification.setMessageKey(resultSet.getString("message_key"));
         notification.setTopicKey(resultSet.getString("topic_key"));
         notification.setNotificationDateTime(resultSet.getTimestamp("notification_date_time").toLocalDateTime());
+        notification.setMessageValues(new ArrayList<>());
+        notification.setTopicValues(new ArrayList<>());
 
         return notification;
     }

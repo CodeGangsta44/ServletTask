@@ -36,20 +36,20 @@ angular.module("registration_form",[])
                 headers: { "Content-Type" : "application/json" }
             }).then(
                 (data) => {
+                    console.log('HERE IS DATA:');
                     console.log(data);
                     Object.keys($scope.auth)
                         .forEach(key => {
                             setColorInputLabel(key, 'black');
                             $scope.auth[key] = '';
                         });
-
                 resultMessageEl.className = 'alert alert-success';
-                resultMessageEl.innerText = JSON.parse(data.data);
+                resultMessageEl.innerText = data.data;
                 resultMessageEl.style.visibility='visible';
         },
             (error) => {
-                console.dir(error);
-                let data = JSON.parse(error.data);
+                console.log(error);
+                let data = error.data;
                 let note = data.note;
 
                 Object.keys(note)

@@ -1,5 +1,6 @@
 package ua.dovhopoliuk.model.service;
 
+import ua.dovhopoliuk.model.dao.ConferenceDao;
 import ua.dovhopoliuk.model.dao.DaoFactory;
 import ua.dovhopoliuk.model.entity.Conference;
 import ua.dovhopoliuk.model.entity.Report;
@@ -14,74 +15,64 @@ import java.util.stream.Collectors;
 public class ConferenceService {
     private final DaoFactory daoFactory = DaoFactory.getInstance();
     private UserService userService;
-    private ReportService reportService;
 
-    public ConferenceService(UserService userService,
-                      ReportService reportService) {
+    public ConferenceService(UserService userService) {
 
         this.userService = userService;
-        this.reportService = reportService;
     }
 
-    public List<Conference> getAllValidConferences() {
-        return this.daoFactory.createConferenceDao().findAll().stream()
-                .filter(Conference::isApproved)
-                .filter(conference -> !conference.isFinished())
-                .collect(Collectors.toList());
-        // TODO: implement this method
-//        return this.conferenceRepository.findAllByApprovedIsTrueAndFinishedIsFalse();
+    public List<Conference> getAllValidConferences(){
+        try (ConferenceDao conferenceDao = daoFactory.createConferenceDao()) {
+            return conferenceDao.findAllByApprovedIsTrueAndFinishedIsFalse();
+        }
     }
 
-    public List<Conference> getAllNotApprovedConferences() {
-        return this.daoFactory.createConferenceDao().findAll().stream()
-                .filter(conference -> !conference.isApproved())
-                .collect(Collectors.toList());
-
-        // TODO: implement this method
-//        return this.conferenceRepository.findAllByApprovedIsFalse();
+    public List<Conference> getAllNotApprovedConferences()  {
+        try (ConferenceDao conferenceDao = daoFactory.createConferenceDao()) {
+            return conferenceDao.findAllByApprovedIsFalse();
+        }
     }
 
     public List<Conference> getAllFinishedConferences() {
-        return this.daoFactory.createConferenceDao().findAll().stream()
-                .filter(Conference::isFinished)
-                .collect(Collectors.toList());
-        // TODO: implement this method
-//        return this.conferenceRepository.findAllByFinishedIsTrue();
+        try (ConferenceDao conferenceDao = daoFactory.createConferenceDao()) {
+            return conferenceDao.findAllByFinishedIsTrue();
+        }
     }
 
-//    public List<Conference> getAllNotFinishedConferences() {
-//        // TODO: implement this method
-////        return this.conferenceRepository.findAllByFinishedIsFalseAndApprovedIsTrue();
-//    }
 
     public List<Conference> getAllConferencesByCurrentUser(HttpServletRequest request) {
-        return daoFactory.createConferenceDao().findAll().stream()
-                .filter(Conference::isApproved)
-                .filter(conference -> !conference.isFinished())
-                .filter(conference -> conference.getRegisteredGuests().contains(userService.getCurrentUser(request)))
-                .collect(Collectors.toList());
-
-        // TODO: implement this method
-//        return this.conferenceRepository.findAllByRegisteredGuestsContainsAndApprovedIsTrueAndFinishedIsFalse(userService.getCurrentUser());
+        try (ConferenceDao conferenceDao = daoFactory.createConferenceDao()) {
+            return conferenceDao
+                    .findAllByRegisteredGuestsContainsAndApprovedIsTrueAndFinishedIsFalse(userService
+                            .getIdOfCurrentUser(request));
+        }
     }
 
     public Conference getConferenceById(Long id){
-        return daoFactory.createConferenceDao().findById(id);
+        try (ConferenceDao conferenceDao = daoFactory.createConferenceDao()) {
+            return conferenceDao.findById(id);
+        }
     }
 
     public void addNewConference(Conference conference) {
-        daoFactory.createConferenceDao().create(conference);
+        try (ConferenceDao conferenceDao = daoFactory.createConferenceDao()) {
+            conferenceDao.create(conference);
+        }
     }
 
     public void deleteConferenceById(Long id) {
-        daoFactory.createConferenceDao().delete(id);
+        try (ConferenceDao conferenceDao = daoFactory.createConferenceDao()) {
+            conferenceDao.delete(id);
+        }
     }
 
     public void updateConferenceById(Long id, Conference newConference) {
-        Conference oldConference = daoFactory.createConferenceDao().findById(id);
+        Conference oldConference = getConferenceById(id);
         copyUpdatableFields(oldConference, newConference);
 
-        daoFactory.createConferenceDao().update(oldConference);
+        try (ConferenceDao conferenceDao = daoFactory.createConferenceDao()) {
+            conferenceDao.update(oldConference);
+        }
     }
 
     private void copyUpdatableFields(Conference oldConf, Conference newConf) {
@@ -106,14 +97,13 @@ public class ConferenceService {
     }
 
     public Set<User> getRegisteredUsers(Long conferenceId) {
-        return daoFactory.createConferenceDao()
-                .findById(conferenceId)
-                .getRegisteredGuests();
+        return getConferenceById(conferenceId).getRegisteredGuests();
     }
 
     public void changeRegistration(HttpServletRequest request, Long conferenceId) {
+
         Long userId = userService.getIdOfCurrentUser(request);
-        Conference conference = daoFactory.createConferenceDao().findById(conferenceId);
+        Conference conference = getConferenceById(conferenceId);
         User user = userService.getUserById(userId);
 
         if (!conference.isApproved() || conference.isFinished()) {
@@ -126,7 +116,9 @@ public class ConferenceService {
             conference.getRegisteredGuests().remove(user);
         }
 
-        daoFactory.createConferenceDao().update(conference);
+        try (ConferenceDao conferenceDao = daoFactory.createConferenceDao()) {
+            conferenceDao.update(conference);
+        }
     }
 
     public boolean isUserRegistered(HttpServletRequest request, Conference conference) {
@@ -138,42 +130,26 @@ public class ConferenceService {
                 .contains(userId);
     }
 
-    public void cancelRegistrationOfUser(Long conferenceId, Long userId) {
-        Conference conference = daoFactory.createConferenceDao().findById(conferenceId);
-        conference.getRegisteredGuests().remove(userService.getUserById(userId));
-
-        daoFactory.createConferenceDao().update(conference);
-    }
 
     public Set<Report> getReportsById(Long conferenceId) {
-        return daoFactory.createConferenceDao().findById(conferenceId).getReports();
+        return getConferenceById(conferenceId).getReports();
     }
 
-    public void deleteReport(Long conferenceId, Long reportId) {
-        Conference conference = daoFactory.createConferenceDao().findById(conferenceId);
-        Report report = reportService.getReportById(reportId);
-
-        conference.getReports().remove(report);
-
-        daoFactory.createConferenceDao().update(conference);
-    }
 
     public void approve(Long conferenceId) {
-        Conference conference = daoFactory.createConferenceDao().findById(conferenceId);
+        Conference conference = getConferenceById(conferenceId);
         conference.setApproved(true);
-        daoFactory.createConferenceDao().update(conference);
+        updateConferenceById(conferenceId, conference);
     }
 
     public void reject(Long conferenceId) {
-        daoFactory.createConferenceDao().delete(conferenceId);
+        deleteConferenceById(conferenceId);
     }
 
     public void finish(Long conferenceId, Long numberOfVisitedGuests) {
-        Conference conference = daoFactory.createConferenceDao().findById(conferenceId);
-
+        Conference conference = getConferenceById(conferenceId);
         conference.setNumberOfVisitedGuests(numberOfVisitedGuests);
         conference.setFinished(true);
-
-        daoFactory.createConferenceDao().update(conference);
+        updateConferenceById(conferenceId, conference);
     }
 }

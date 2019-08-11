@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.TimeZone;
 
@@ -23,6 +24,8 @@ public class ConferenceMapper implements ObjectMapper<Conference> {
         conference.setApproved(resultSet.getBoolean("approved"));
         conference.setFinished(resultSet.getBoolean("finished"));
         conference.setNumberOfVisitedGuests(resultSet.getLong("number_of_visited_guests"));
+        conference.setRegisteredGuests(new HashSet<>());
+        conference.setReports(new HashSet<>());
 
         return conference;
     }

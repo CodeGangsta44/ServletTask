@@ -1,5 +1,8 @@
 package ua.dovhopoliuk.model.entity;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -95,5 +98,37 @@ public class Conference {
 
     public void setNumberOfVisitedGuests(Long numberOfVisitedGuests) {
         this.numberOfVisitedGuests = numberOfVisitedGuests;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+
+        if (o == null || getClass() != o.getClass() || hashCode() != o.hashCode()){
+            return false;
+        }
+
+        Conference conference = (Conference)o;
+
+        return new EqualsBuilder()
+                .append(id, conference.id)
+                .append(topic, conference.topic)
+                .append(eventDateTime, conference.eventDateTime)
+                .append(eventAddress, conference.eventAddress)
+                .append(description, conference.description)
+                .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+                .append(id)
+                .append(topic)
+                .append(eventDateTime)
+                .append(eventAddress)
+                .append(description)
+                .hashCode();
     }
 }

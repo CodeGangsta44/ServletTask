@@ -10,6 +10,8 @@ public class RegNoteDTO {
     private String email;
     private String password;
 
+    private String isSpeaker;
+
     public String getSurname() {
         return surname;
     }
@@ -56,5 +58,13 @@ public class RegNoteDTO {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getIsSpeaker() {
+        return isSpeaker;
+    }
+
+    public void setIsSpeaker(String isSpeaker) {
+        this.isSpeaker = isSpeaker;
     }
 }

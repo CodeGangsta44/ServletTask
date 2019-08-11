@@ -2,6 +2,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page isELIgnored="false" %>
+<fmt:setLocale value="${sessionScope.lang}" />
+<fmt:setBundle basename="messages"/>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,8 +14,6 @@
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
 <body>
-<fmt:setLocale value="${sessionScope.lang}" />
-<fmt:setBundle basename="messages"/>
 <div class="container" style="margin-top: 60px">
     <div class="row justify-content-center">
         <div class="col-md-8 col-md-offset-2">

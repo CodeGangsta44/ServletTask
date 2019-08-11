@@ -2,11 +2,14 @@ package ua.dovhopoliuk.model.dao.implementation;
 
 import ua.dovhopoliuk.model.dao.*;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class JDBCDaoFactory extends DaoFactory {
+
+    private DataSource dataSource = ConnectionPoolHolder.getDataSource();
 
     @Override
     public UserDao createUserDao() {
@@ -40,10 +43,7 @@ public class JDBCDaoFactory extends DaoFactory {
 
     private Connection getConnection(){
         try {
-            return DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/taskdb",
-                    "root" ,
-                    "12345678" );
+            return dataSource.getConnection();
         } catch (SQLException e) {
             e.printStackTrace();
             throw new RuntimeException(e);

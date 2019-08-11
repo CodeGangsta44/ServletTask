@@ -29,7 +29,6 @@ public class PageCommand implements Command {
         String path = request.getRequestURI();
         path = path.replaceFirst(".*/app/" , "")
                 .replaceFirst("/.*", "");
-        System.out.println("Page is:" + path);
 
         Command command = pages.getOrDefault(path ,
                 (r) -> "/main.jsp");

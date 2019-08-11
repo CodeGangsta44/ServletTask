@@ -5,5 +5,8 @@ import ua.dovhopoliuk.model.entity.Conference;
 import java.util.List;
 
 public interface ConferenceDao extends GenericDao<Conference> {
-//    List<Conference> findAllByApprovedIsTrueAndFinishedIsFalse();
+    List<Conference> findAllByApprovedIsTrueAndFinishedIsFalse();
+    List<Conference> findAllByApprovedIsFalse();
+    List<Conference> findAllByFinishedIsTrue();
+    List<Conference> findAllByRegisteredGuestsContainsAndApprovedIsTrueAndFinishedIsFalse(Long userId);
 }

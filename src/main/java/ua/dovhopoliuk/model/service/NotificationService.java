@@ -2,11 +2,11 @@ package ua.dovhopoliuk.model.service;
 
 
 import ua.dovhopoliuk.model.dao.DaoFactory;
+import ua.dovhopoliuk.model.dao.NotificationDao;
 import ua.dovhopoliuk.model.entity.Notification;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class NotificationService {
     private final DaoFactory daoFactory = DaoFactory.getInstance();
@@ -17,19 +17,20 @@ public class NotificationService {
     }
 
     public List<Notification> getAllNotifications(){
-        return daoFactory.createNotificationDao().findAll();
+        try (NotificationDao notificationDao = daoFactory.createNotificationDao()) {
+            return notificationDao.findAll();
+        }
     }
 
     public List<Notification> getCurrentUserNotifications(HttpServletRequest request) {
-        //TODO: implement this method
-        return daoFactory.createNotificationDao().findAll().stream()
-                .filter(notification -> {
-                    return notification.getAddressedUser().equals(userService.getCurrentUser(request));
-                })
-                .collect(Collectors.toList());
+        try (NotificationDao notificationDao = daoFactory.createNotificationDao()) {
+            return notificationDao.findAllByAddressedUserId(userService.getIdOfCurrentUser(request));
+        }
     }
 
     public void deleteNotification(Long notificationId) {
-        daoFactory.createNotificationDao().delete(notificationId);
+        try (NotificationDao notificationDao = daoFactory.createNotificationDao()) {
+            notificationDao.delete(notificationId);
+        }
     }
 }

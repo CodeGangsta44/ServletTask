@@ -9,10 +9,7 @@ import ua.dovhopoliuk.model.entity.User;
 import ua.dovhopoliuk.model.entity.Vote;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class JDBCVoteDao implements VoteDao {
     private final Connection connection;
@@ -38,7 +35,11 @@ public class JDBCVoteDao implements VoteDao {
     private static final String SQL_DELETE_VOTE_BY_ID = "DELETE FROM votes " +
             "WHERE vote_id = ?";
 
-    JDBCVoteDao(Connection connection) {
+    private static final String SQL_PATTERN_SPEAKER_ID = "speaker_user_id = ?";
+
+    private static final String SQL_PATTERN_USER_ID = "user_user_id = ?";
+
+            JDBCVoteDao(Connection connection) {
         this.connection = connection;
     }
 
@@ -92,6 +93,45 @@ public class JDBCVoteDao implements VoteDao {
     }
 
     @Override
+    public List<Vote> findAllBySpeakerId(Long id){
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_SELECT_ALL_VOTES +
+                " WHERE " +
+                SQL_PATTERN_SPEAKER_ID)) {
+
+            preparedStatement.setLong(1, id);
+
+            return findVotesByPreparedStatement(preparedStatement);
+
+        } catch (SQLException e) {
+            System.err.format("SQL State: %s\n%s", e.getSQLState(), e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public Optional<Vote> findBySpeakerAndUser(Long speakerId, Long userId){
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_SELECT_ALL_VOTES +
+                " WHERE " +
+                SQL_PATTERN_SPEAKER_ID +
+                " AND " +
+                SQL_PATTERN_USER_ID)) {
+
+            preparedStatement.setLong(1, speakerId);
+            preparedStatement.setLong(2, userId);
+
+            return Optional.of(findVotesByPreparedStatement(preparedStatement).get(0));
+
+        } catch (SQLException e) {
+            System.err.format("SQL State: %s\n%s", e.getSQLState(), e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return Optional.empty();
+    }
+
+    @Override
     public void update(Vote entity) {
         try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_UPDATE_VOTE_BY_ID)) {
 
@@ -122,8 +162,12 @@ public class JDBCVoteDao implements VoteDao {
     }
 
     @Override
-    public void close() throws Exception {
-        connection.close();
+    public void close() {
+        try {
+            connection.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void fillPreparedStatement(Vote entity, PreparedStatement preparedStatement) throws SQLException {
@@ -158,6 +202,8 @@ public class JDBCVoteDao implements VoteDao {
             vote.setUser(user);
 
         }
+
+        userDao.close();
         return new ArrayList<>(votes.values());
     }
 }

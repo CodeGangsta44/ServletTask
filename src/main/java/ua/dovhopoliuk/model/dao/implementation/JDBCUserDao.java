@@ -73,7 +73,6 @@ public class JDBCUserDao implements UserDao {
             insertRoles(entity);
 
         } catch (SQLException e) {
-            System.out.println(e.getErrorCode());
             if (e.getErrorCode() == 1062) {
                 e.printStackTrace();
                 throw new LoginNotUniqueException("Entered login is not unique: ", entity.getLogin());
@@ -157,8 +156,12 @@ public class JDBCUserDao implements UserDao {
     }
 
     @Override
-    public void close() throws Exception {
-        connection.close();
+    public void close() {
+        try {
+            connection.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

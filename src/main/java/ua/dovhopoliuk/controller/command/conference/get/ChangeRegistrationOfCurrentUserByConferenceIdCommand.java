@@ -26,8 +26,6 @@ public class ChangeRegistrationOfCurrentUserByConferenceIdCommand implements Com
         Long conferenceId = Long.parseLong(path.replaceFirst(".*/conferences/", "")
                 .replace("/changeRegistration", ""));
 
-        System.out.println(conferenceId);
-
         conferenceService.changeRegistration(request, conferenceId);
 
         Conference conference = conferenceService.getConferenceById(conferenceId);

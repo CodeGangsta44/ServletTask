@@ -6,6 +6,7 @@ import ua.dovhopoliuk.model.dao.UserDao;
 import ua.dovhopoliuk.model.dao.mapper.NotificationMapper;
 import ua.dovhopoliuk.model.dao.mapper.UserMapper;
 import ua.dovhopoliuk.model.entity.Notification;
+import ua.dovhopoliuk.model.entity.Role;
 import ua.dovhopoliuk.model.entity.User;
 
 import java.sql.*;
@@ -16,7 +17,6 @@ import java.util.Map;
 
 public class JDBCNotificationDao implements NotificationDao {
     private final Connection connection;
-    private final DaoFactory daoFactory = new JDBCDaoFactory();
 
     private static final String SQL_INSERT_NOTIFICATION = "INSERT INTO notifications" +
             "(message_key, " +
@@ -30,23 +30,31 @@ public class JDBCNotificationDao implements NotificationDao {
             "message_values) " +
             "VALUES (?,?)";
 
-    private static final String SQL_INSERT_TOPIC_VALUES = "INSERT INTO notification_message_values" +
+    private static final String SQL_INSERT_TOPIC_VALUES = "INSERT INTO notification_topic_values" +
             "(notification_notification_id, " +
-            "message_values) " +
+            "topic_values) " +
             "VALUES (?,?)";
 
     private static final String SQL_SELECT_ALL_NOTIFICATIONS = "SELECT * FROM notifications AS n " +
             "JOIN notification_message_values AS nmv " +
             "ON n.notification_id = nmv.notification_notification_id " +
             "JOIN notification_topic_values AS ntv " +
-            "ON n.notification_id = ntv.notification_notification_id";
-
-    private static final String SQL_SELECT_NOTIFICATION_BY_ID = "SELECT * FROM notifications AS n " +
-            "JOIN notification_message_values AS nmv " +
-            "ON n.notification_id = nmv.notification_notification_id " +
-            "JOIN notification_topic_values AS ntv " +
             "ON n.notification_id = ntv.notification_notification_id " +
-            "WHERE n.notification_id = ?";
+            "JOIN users AS u " +
+            "ON n.addressed_user_user_id = u.user_id " +
+            "JOIN user_roles AS ur " +
+            "ON u.user_id = ur.user_user_id";
+
+//    private static final String SQL_SELECT_NOTIFICATION_BY_ID = "SELECT * FROM notifications AS n " +
+//            "JOIN notification_message_values AS nmv " +
+//            "ON n.notification_id = nmv.notification_notification_id " +
+//            "JOIN notification_topic_values AS ntv " +
+//            "ON n.notification_id = ntv.notification_notification_id " +
+//            "JOIN users AS u " +
+//            "ON n.addressed_user_user_id = u.user_id " +
+//            "JOIN user_roles AS ur " +
+//            "ON u.user_id = ur.user_user_id " +
+//            "WHERE n.notification_id = ?";
 
     private static final String SQL_UPDATE_NOTIFICATION_BY_ID = "UPDATE notifications SET " +
             "message_key = ?, " +
@@ -66,6 +74,10 @@ public class JDBCNotificationDao implements NotificationDao {
     private static final String SQL_DELETE_NOTIFICATION_BY_ID = "DELETE FROM notifications " +
             "WHERE notification_id = ?";
 
+    private static final String SQL_PATTERN_NOTIFICATION_ID = "n.notification_id = ?";
+
+    private static final String SQL_PATTERN_ADDRESSED_USER_ID = "n.addressed_user_user_id = ?";
+
 
     JDBCNotificationDao(Connection connection) {
         this.connection = connection;
@@ -74,6 +86,7 @@ public class JDBCNotificationDao implements NotificationDao {
     @Override
     public void create(Notification entity) {
         try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_INSERT_NOTIFICATION, Statement.RETURN_GENERATED_KEYS)) {
+            System.out.println("Saving notification to database:");
             fillPreparedStatement(entity, preparedStatement);
             preparedStatement.executeUpdate();
             ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
@@ -82,7 +95,10 @@ public class JDBCNotificationDao implements NotificationDao {
                 entity.setId(generatedKeys.getLong(1));
             }
 
+            System.out.println("Inserting message values:");
             insertMessageValues(entity);
+
+            System.out.println("Inserting topic values:");
             insertTopicValues(entity);
 
         } catch (SQLException e) {
@@ -94,7 +110,9 @@ public class JDBCNotificationDao implements NotificationDao {
 
     @Override
     public Notification findById(Long id) {
-        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_SELECT_NOTIFICATION_BY_ID)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_SELECT_ALL_NOTIFICATIONS +
+                " WHERE " +
+                SQL_PATTERN_NOTIFICATION_ID)) {
             preparedStatement.setLong(1, id);
 
             return findNotificationsByPreparedStatement(preparedStatement).get(0);
@@ -110,6 +128,23 @@ public class JDBCNotificationDao implements NotificationDao {
     @Override
     public List<Notification> findAll() {
         try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_SELECT_ALL_NOTIFICATIONS)) {
+
+            return findNotificationsByPreparedStatement(preparedStatement);
+
+        } catch (SQLException e) {
+            System.err.format("SQL State: %s\n%s", e.getSQLState(), e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public List<Notification> findAllByAddressedUserId(Long id) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_SELECT_ALL_NOTIFICATIONS +
+                " WHERE " +
+                SQL_PATTERN_ADDRESSED_USER_ID)) {
+            preparedStatement.setLong(1, id);
 
             return findNotificationsByPreparedStatement(preparedStatement);
 
@@ -165,8 +200,12 @@ public class JDBCNotificationDao implements NotificationDao {
     }
 
     @Override
-    public void close() throws Exception {
-        connection.close();
+    public void close() {
+        try {
+            connection.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void fillPreparedStatement(Notification entity, PreparedStatement preparedStatement) throws SQLException {
@@ -205,14 +244,14 @@ public class JDBCNotificationDao implements NotificationDao {
         NotificationMapper notificationMapper = new NotificationMapper();
         UserMapper userMapper = new UserMapper();
 
-        UserDao userDao = daoFactory.createUserDao();
-
         while (resultSet.next()) {
             Notification notification = notificationMapper.extractFromResultSet(resultSet);
             notification = notificationMapper.makeUnique(notifications, notification);
 
-            User addressedUser = userDao.findById(resultSet.getLong("addressed_user_user_id"));
+            User addressedUser = userMapper.extractFromResultSet(resultSet);
+            Role role = userMapper.extractRoleFromResultSet(resultSet);
             addressedUser = userMapper.makeUnique(users, addressedUser);
+            addressedUser.getRoles().add(role);
 
             notification.setAddressedUser(addressedUser);
             notification.getMessageValues().add(notificationMapper.extractMessageValueFromResultSet(resultSet));

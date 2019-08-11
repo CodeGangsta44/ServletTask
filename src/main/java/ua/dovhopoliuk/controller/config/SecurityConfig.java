@@ -35,6 +35,11 @@ public class SecurityConfig {
 
         mapConfig.put("POST", postUrlPatterns);
 
+        Map<Role, Set<String>> putUrlPatterns = new HashMap<>();
+        Map<Role, Set<String>> deleteUrlPatterns = new HashMap<>();
+
+        mapConfig.put("PUT", putUrlPatterns);
+        mapConfig.put("DELETE", deleteUrlPatterns);
     }
 
 

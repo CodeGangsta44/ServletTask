@@ -10,7 +10,7 @@ $(document).ready(function () {
         type: "GET",
         success: function (result) {
             console.log(result);
-            enableElements(JSON.parse(result));
+            enableElements(result);
         },
         error: function (error) {
             console.log(error);

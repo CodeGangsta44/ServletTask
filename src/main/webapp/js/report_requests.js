@@ -18,7 +18,7 @@ function getListOfRequests($scope, $http) {
         .then(
             (data)=>{
                 console.log(data);
-                $scope.report_requests = JSON.parse(data.data);
+                $scope.report_requests = data.data;
             },
             (error) => {
                 console.log(error.data);

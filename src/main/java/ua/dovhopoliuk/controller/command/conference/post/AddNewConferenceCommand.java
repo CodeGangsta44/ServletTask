@@ -10,6 +10,7 @@ import ua.dovhopoliuk.model.service.ConferenceService;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashSet;
 
 public class AddNewConferenceCommand implements Command {
     private CommandJsonUtility<ConferenceDTO> conferenceDTOCommandJsonUtility = new CommandJsonUtility<>(ConferenceDTO.class);
@@ -32,6 +33,8 @@ public class AddNewConferenceCommand implements Command {
         conference.setEventDateTime(LocalDateTime.parse(conferenceDTO.getEventDateTime(), formatter));
         conference.setEventAddress(conferenceDTO.getEventAddress());
         conference.setDescription(conferenceDTO.getDescription());
+        conference.setRegisteredGuests(new HashSet<>());
+        conference.setReports(new HashSet<>());
 
         conferenceService.addNewConference(conference);
 

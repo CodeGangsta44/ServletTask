@@ -1,5 +1,8 @@
 package ua.dovhopoliuk.model.entity;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -68,5 +71,37 @@ public class Notification {
 
     public void setMessageValues(List<String> messageValues) {
         this.messageValues = messageValues;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+
+        if (o == null || getClass() != o.getClass() || hashCode() != o.hashCode()){
+            return false;
+        }
+
+        Notification notification = (Notification)o;
+
+        return new EqualsBuilder()
+                .append(id, notification.id)
+                .append(addressedUser, notification.addressedUser)
+                .append(notificationDateTime, notification.notificationDateTime)
+                .append(topicKey, notification.topicKey)
+                .append(messageKey, notification.messageKey)
+                .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+                .append(id)
+                .append(addressedUser)
+                .append(notificationDateTime)
+                .append(topicKey)
+                .append(messageKey)
+                .hashCode();
     }
 }

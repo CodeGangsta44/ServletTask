@@ -26,8 +26,6 @@ public class ProcessRequestByConferenceIdCommand implements Command {
                 .fromJson(CommandRequestBodyReaderUtility
                         .readRequestBody(request));
 
-        System.out.println(answer);
-
         if (answer) {
             conferenceService.approve(conferenceId);
         } else {

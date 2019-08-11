@@ -1,5 +1,8 @@
 package ua.dovhopoliuk.model.entity;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 public class Vote {
     private Long id;
     private User speaker;
@@ -36,5 +39,35 @@ public class Vote {
 
     public void setMark(int mark) {
         this.mark = mark;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+
+        if (o == null || getClass() != o.getClass() || hashCode() != o.hashCode()){
+            return false;
+        }
+
+        Vote vote = (Vote)o;
+
+        return new EqualsBuilder()
+                .append(id, vote.id)
+                .append(speaker, vote.speaker)
+                .append(user, vote.user)
+                .append(mark, vote.mark)
+                .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+                .append(id)
+                .append(speaker)
+                .append(user)
+                .append(mark)
+                .hashCode();
     }
 }

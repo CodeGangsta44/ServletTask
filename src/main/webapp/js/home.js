@@ -5,7 +5,7 @@ angular.module("home", [])
             .then(
                 (data)=>{
                     console.log(data);
-                    Object.assign($scope, JSON.parse(data.data));
+                    Object.assign($scope, data.data);
                 },
                 (error) => {
                     console.log(error.data);

@@ -2,7 +2,9 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page isELIgnored="false" %>
-<link rel="stylesheet" type="text/css" href="css/rating.css">
+<fmt:setLocale value="${sessionScope.lang}" />
+<fmt:setBundle basename="messages"/>
+<link rel="stylesheet" type="text/css" href="../../css/rating.css">
 <div class="container" style="margin-top: 30px">
     <div style="display: flex">
         <div id="mainUserInformation" style="flex: 2">
@@ -106,43 +108,6 @@
                 </div>
 
             </div>
-
-<#--            <div id="stars">-->
-<#--                <a href="" class="star"-->
-<#--                      style="font-size: xx-large"-->
-<#--                      ng-repeat="x in [].constructor(5) track by $index"-->
-<#--                      id="star-{{$index + 1}}"-->
-<#--                      ng-click="clickStar($index + 1)">★</a>-->
-<#--            </div>-->
-
-<#--            <div>-->
-<#--                Average rating: {{averageRating}}-->
-<#--            </div>-->
-
-<#--            <div id="lines">-->
-<#--                <ul style="list-style: none; padding-left: 0">-->
-<#--                    <li ng-repeat="x in [].constructor(5) track by $index">-->
-<#--                        {{5 - $index}}-->
-<#--                        <div class="line"-->
-<#--                             id="line-{{5 - $index}}"-->
-<#--                             style="display: inline-block; width: 50%; height: 10px; background-color: #28a745; margin-top: 3px">-->
-<#--                        </div>-->
-<#--                        <span id="line-span-{{5 - $index}}"></span>-->
-<#--                    </li>-->
-<#--                </ul>-->
-<#--            </div>-->
-
-<#--            <div>-->
-<#--                Total reports: {{speakerStatistics.totalReports}}-->
-<#--            </div>-->
-
-<#--            <div>-->
-<#--                Total conferences: {{speakerStatistics.totalConferences}}-->
-<#--            </div>-->
-
-<#--            <div>-->
-<#--                Total people: {{speakerStatistics.totalPeople}}-->
-<#--            </div>-->
         </div>
     </div>
 </div>

@@ -2,6 +2,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page isELIgnored="false" %>
+<fmt:setLocale value="${sessionScope.lang}" />
+<fmt:setBundle basename="messages"/>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,9 +19,6 @@
 
 </head>
 <body ng-app="reports" >
-<fmt:setLocale value="${sessionScope.lang}" />
-<fmt:setBundle basename="messages"/>
-
 <div class="container" style="margin-top: 30px" >
     <div class="row justify-content-center">
         <div class="col-md-12">

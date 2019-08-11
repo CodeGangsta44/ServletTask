@@ -44,22 +44,20 @@ public class RegisterUserCommand implements Command {
             e.setNote(regNoteDTO);
 
             String message = new CommandJsonUtility<>(LoginNotUniqueException.class).toJson(e);
-            System.out.println("In catch bloc: " + message);
             throw new RequestException(message);
         }
 
-        System.out.println("Getting message from bundle:");
-        System.out.println(CommandBundleUtility
+        return  new CommandJsonUtility<>(String.class).toJson( CommandBundleUtility
                 .getMessage(request, "messages", "registration.success"));
-
-        return  CommandBundleUtility
-                .getMessage(request, "messages", "registration.success");
     }
 
     private User createUserFromRegNoteDTO(RegNoteDTO regNoteDTO){
         Set<Role> roles = new HashSet<>();
         roles.add(Role.USER);
-        roles.add(Role.SPEAKER);
+        if (Boolean.parseBoolean(regNoteDTO.getIsSpeaker())) {
+            roles.add(Role.SPEAKER);
+        }
+
 
         User user = new User();
         user.setSurname(regNoteDTO.getSurname());

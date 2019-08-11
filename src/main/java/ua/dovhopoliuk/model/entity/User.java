@@ -1,5 +1,8 @@
 package ua.dovhopoliuk.model.entity;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 import java.util.Set;
 
 public class User {
@@ -77,5 +80,39 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+
+        if (o == null || getClass() != o.getClass() || hashCode() != o.hashCode()){
+            return false;
+        }
+
+        User user = (User)o;
+
+        return new EqualsBuilder()
+                .append(id, user.id)
+                .append(surname, user.surname)
+                .append(name, user.name)
+                .append(patronymic, user.patronymic)
+                .append(login, user.login)
+                .append(email, user.email)
+                .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+                .append(id)
+                .append(surname)
+                .append(name)
+                .append(patronymic)
+                .append(login)
+                .append(email)
+                .hashCode();
     }
 }

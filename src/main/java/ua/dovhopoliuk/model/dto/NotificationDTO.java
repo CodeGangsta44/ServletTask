@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 
 public class NotificationDTO {
     private Long id;
-    private LocalDateTime notificationDateTime;
+    private String notificationDateTime;
     private String topic;
     private String message;
 
@@ -17,12 +17,12 @@ public class NotificationDTO {
         this.id = id;
     }
 
-    public LocalDateTime getNotificationDateTime() {
+    public String getNotificationDateTime() {
         return notificationDateTime;
     }
 
-    public void setNotificationDateTime(LocalDateTime notificationDateTime) {
-        this.notificationDateTime = notificationDateTime;
+    public void setNotificationDateTime(String notificationDateTime) {
+        this.notificationDateTime = notificationDateTime.toString();
     }
 
     public String getTopic() {

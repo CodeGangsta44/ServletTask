@@ -2,7 +2,9 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page isELIgnored="false" %>
-<link rel="stylesheet" type="text/css" href="css/styles.css">
+<fmt:setLocale value="${sessionScope.lang}" />
+<fmt:setBundle basename="messages"/>
+<link rel="stylesheet" type="text/css" href="../css/styles.css">
 <nav class="navbar navbar-expand-lg navbar-light bg-light" id="header">
     <a class="navbar-brand" href="/app/">
         <img src="/img/logo/conf.hub.png" alt="..." width="50" height="50">

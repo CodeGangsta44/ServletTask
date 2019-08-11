@@ -37,7 +37,7 @@ function getListOfUsers($scope, $http) {
         .then(
             (data)=>{
                 console.log(data);
-                $scope.users = JSON.parse(data.data);
+                $scope.users = data.data;
             },
             (error) => {
                 console.log(error.data);
@@ -115,7 +115,7 @@ function getVotesOfSpeaker($scope, $http) {
         .then(
             (data) => {
                 console.log(data);
-                $scope.votes = JSON.parse(data.data);
+                $scope.votes = data.data;
                 fillStars($scope);
                 drawLines($scope);
                 setMarkOfCurrentUser($scope, $http);
@@ -130,7 +130,7 @@ function getSpeakerStatistics($scope, $http) {
     $http.get("app/api/users/speakerStatistics/" + $scope.user.id)
         .then(
             (data) => {
-                $scope.speakerStatistics = JSON.parse(data.data);
+                $scope.speakerStatistics = data.data;
                 console.log(data);
             },
             (error) => {
@@ -153,7 +153,7 @@ function getUserInfo($scope, $http) {
         .then(
             (data)=>{
                 console.log(data);
-                Object.assign($scope.user, JSON.parse(data.data));
+                Object.assign($scope.user, data.data);
 
                 if ($scope.user.roles.indexOf('SPEAKER') !== -1) {
                     document.getElementById("additionalSpeakerInformation").hidden = false;
@@ -317,7 +317,7 @@ app.controller("UserListCtrl", function ($scope, $http) {
 
                 getListOfUsers($scope, $http);
                 resultMessageEl.className = 'alert alert-success';
-                resultMessageEl.innerText = JSON.parse(data.data);
+                resultMessageEl.innerText = data.data;
                 resultMessageEl.style.visibility='visible';
             },
             (error) => {
@@ -335,7 +335,7 @@ app.controller("UserListCtrl", function ($scope, $http) {
 
         $scope.reportProposeForm.speaker = user;
 
-        $http.get("/api/conferences")
+        $http.get("app/api/conferences")
             .then(
                 (data)=>{
                     console.log(data);

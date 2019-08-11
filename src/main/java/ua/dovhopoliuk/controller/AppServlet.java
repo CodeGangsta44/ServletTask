@@ -40,8 +40,8 @@ public class AppServlet extends HttpServlet {
     private Map<String, Command> deleteCommands = new HashMap<>();
 
     private ReportService reportService = new ReportService();
-    private UserService userService = new UserService(reportService);
-    private ConferenceService conferenceService = new ConferenceService(userService, reportService);
+    private UserService userService = new UserService();
+    private ConferenceService conferenceService = new ConferenceService(userService);
     private ReportRequestService reportRequestService = new ReportRequestService(userService);
     private NotificationService notificationService = new NotificationService(userService);
     private VoteService voteService = new VoteService(userService);
@@ -89,9 +89,7 @@ public class AppServlet extends HttpServlet {
                                 HttpServletResponse response,
                                 Map<String, Command> commands) throws ServletException, IOException {
         String path = request.getRequestURI();
-        System.out.println(path);
         path = path.replaceFirst(".*app/" , "");
-        System.out.println(path);
 
         if (path.startsWith("api/")) {
             path = path.replaceFirst(".*api/", "");
@@ -99,7 +97,6 @@ public class AppServlet extends HttpServlet {
         } else {
             path = "page";
         }
-        System.out.println(path);
 
         Command command = commands.getOrDefault(path ,
                 (r)->"/main.jsp");
@@ -114,7 +111,6 @@ public class AppServlet extends HttpServlet {
             message = e.getMessage();
         }
 
-        System.out.println("Message is: " + message);
 
         if (path.equals("page")) {
             processPageRequestAnswer(request, response, message);
@@ -141,7 +137,7 @@ public class AppServlet extends HttpServlet {
             response.sendRedirect(answer.replace("redirect:", "/app"));
         } else {
             response.setContentType("application/json");
-            response.getWriter().println(commandJsonUtility.toJson(answer));
+            response.getWriter().println(answer);
         }
     }
 }

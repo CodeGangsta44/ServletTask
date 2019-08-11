@@ -19,7 +19,7 @@ import java.util.Map;
 
 public class JDBCReportRequestDao implements ReportRequestDao {
     private final Connection connection;
-    private final DaoFactory daoFactory = new JDBCDaoFactory();
+    private final DaoFactory daoFactory = DaoFactory.getInstance();
 
     private static final String SQL_INSERT_REPORT_REQUEST = "INSERT INTO report_requests" +
             "(topic, " +
@@ -44,6 +44,10 @@ public class JDBCReportRequestDao implements ReportRequestDao {
 
     private static final String SQL_DELETE_REPORT_REQUEST_BY_ID = "DELETE FROM report_requests " +
             "WHERE report_request_id = ?";
+
+    private static final String SQL_PATTERN_APPROVED_BY_MODERATOR = "approved_by_moderator = ?";
+
+    private static final String SQL_PATTERN_SPEAKER_ID = "user_id = ?";
 
     JDBCReportRequestDao(Connection connection) {
         this.connection = connection;
@@ -99,6 +103,27 @@ public class JDBCReportRequestDao implements ReportRequestDao {
     }
 
     @Override
+    public List<ReportRequest> findAllByApprovedByModeratorIsTrueAndSpeakerId(Long id) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_SELECT_ALL_REPORT_REQUESTS +
+                " WHERE " +
+                SQL_PATTERN_APPROVED_BY_MODERATOR +
+                " AND " +
+                SQL_PATTERN_SPEAKER_ID)) {
+
+            preparedStatement.setBoolean(1, true);
+            preparedStatement.setLong(2, id);
+
+            return findReportRequestsByPreparedStatement(preparedStatement);
+
+        } catch (SQLException e) {
+            System.err.format("SQL State: %s\n%s", e.getSQLState(), e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
     public void update(ReportRequest entity) {
         try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_UPDATE_REPORT_REQUEST_BY_ID)) {
 
@@ -129,8 +154,12 @@ public class JDBCReportRequestDao implements ReportRequestDao {
     }
 
     @Override
-    public void close() throws Exception {
-        connection.close();
+    public void close() {
+        try {
+            connection.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void fillPreparedStatement(ReportRequest entity, PreparedStatement preparedStatement) throws SQLException {
@@ -168,6 +197,9 @@ public class JDBCReportRequestDao implements ReportRequestDao {
             reportRequest.setConference(conference);
             reportRequest.setSpeaker(speaker);
         }
+
+        userDao.close();
+        conferenceDao.close();
         return new ArrayList<>(reportRequests.values());
 
     }

@@ -27,8 +27,9 @@ public class UpdateUserCommand implements Command {
 
         userService.updateUser(userDTO);
 
-        return CommandBundleUtility
-                .getMessage(request, "message", "updating.success");
+        return new CommandJsonUtility<String>(String.class)
+                .toJson(CommandBundleUtility
+                .getMessage(request, "messages", "updating.success"));
     }
 }
 

@@ -2,7 +2,9 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page isELIgnored="false" %>
-<link rel="stylesheet" type="text/css" href="css/user_list.css">
+<fmt:setLocale value="${sessionScope.lang}" />
+<fmt:setBundle basename="messages"/>
+<link rel="stylesheet" type="text/css" href="../../css/user_list.css">
 <div class="panel panel-default">
     <div class="panel-heading"><fmt:message key="table.all_users.name"/></div>
     <div class="panel-body">

@@ -1,6 +1,9 @@
 package ua.dovhopoliuk.model.service;
 
 import ua.dovhopoliuk.model.dao.DaoFactory;
+import ua.dovhopoliuk.model.dao.NotificationDao;
+import ua.dovhopoliuk.model.dao.ReportDao;
+import ua.dovhopoliuk.model.dao.ReportRequestDao;
 import ua.dovhopoliuk.model.entity.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -8,7 +11,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class ReportRequestService {
     private final DaoFactory daoFactory = DaoFactory.getInstance();
@@ -28,41 +30,46 @@ public class ReportRequestService {
             reportRequest.setSpeaker(userService.getCurrentUser(request));
         }
 
-        daoFactory.createReportRequestDao().create(reportRequest);
+        try (ReportRequestDao reportRequestDao = daoFactory.createReportRequestDao()) {
+            reportRequestDao.create(reportRequest);
+        }
 
         approve(request, reportRequest);
     }
 
     public List<ReportRequest> getAllReportRequests() {
-        return daoFactory.createReportRequestDao().findAll();
+        try (ReportRequestDao reportRequestDao = daoFactory.createReportRequestDao()) {
+            return reportRequestDao.findAll();
+        }
+    }
+
+    public ReportRequest getReportRequestById(Long reportRequestId) {
+        try (ReportRequestDao reportRequestDao = daoFactory.createReportRequestDao()) {
+            return reportRequestDao.findById(reportRequestId);
+        }
     }
 
     public List<ReportRequest> getProposedReports (HttpServletRequest request) {
         User speaker = userService.getCurrentUser(request);
 
-        return daoFactory.createReportRequestDao().findAll().stream()
-                .filter(ReportRequest::isApprovedByModerator)
-                .filter(reportRequest -> speaker.equals(reportRequest.getSpeaker()))
-                .collect(Collectors.toList());
-
-        // TODO: implement this method
-//        return reportRequestRepository.findAllByApprovedByModeratorIsTrue().stream()
-//                .filter(request -> speaker.equals(request.getSpeaker()))
-//                .collect(Collectors.toList());
+        try (ReportRequestDao reportRequestDao = daoFactory.createReportRequestDao()) {
+            return reportRequestDao.findAllByApprovedByModeratorIsTrueAndSpeakerId(speaker.getId());
+        }
     }
 
     public void approve(HttpServletRequest request, Long reportRequestId) {
-        ReportRequest reportRequest = daoFactory.createReportRequestDao().findById(reportRequestId);
+        ReportRequest reportRequest = getReportRequestById(reportRequestId);
         approve(request, reportRequest);
     }
 
     public void reject(HttpServletRequest request, Long reportRequestId) {
-        ReportRequest reportRequest = daoFactory.createReportRequestDao().findById(reportRequestId);
+        ReportRequest reportRequest = getReportRequestById(reportRequestId);
         reject(request, reportRequest);
     }
 
-    public void approve(HttpServletRequest request, ReportRequest reportRequest) {
+    private void approve(HttpServletRequest request, ReportRequest reportRequest) {
         User currentUser = userService.getCurrentUser(request);
+
 
         if (currentUser.getRoles().contains(Role.MODER)) {
             reportRequest.setApprovedByModerator(true);
@@ -72,7 +79,10 @@ public class ReportRequestService {
             reportRequest.setApprovedBySpeaker(true);
         }
 
-        daoFactory.createReportRequestDao().update(reportRequest);
+        try (ReportRequestDao reportRequestDao = daoFactory.createReportRequestDao()) {
+            reportRequestDao.update(reportRequest);
+        }
+
 
         if (reportRequest.isApprovedByModerator() && reportRequest.isApprovedBySpeaker()) {
             approveRequest(reportRequest);
@@ -93,12 +103,16 @@ public class ReportRequestService {
 
         Notification notification = createNotification(reportRequest, speaker, conference, "approved");
 
-        daoFactory.createNotificationDao().create(notification);
-        daoFactory.createReportDao().create(report);
-        daoFactory.createReportRequestDao().delete(reportRequest.getId());
+        try (NotificationDao notificationDao = daoFactory.createNotificationDao();
+                ReportDao reportDao = daoFactory.createReportDao();
+                ReportRequestDao reportRequestDao = daoFactory.createReportRequestDao()) {
+            notificationDao.create(notification);
+            reportDao.create(report);
+            reportRequestDao.delete(reportRequest.getId());
+        }
     }
 
-    public void reject(HttpServletRequest request, ReportRequest reportRequest) {
+    private void reject(HttpServletRequest request, ReportRequest reportRequest) {
         Conference conference = reportRequest.getConference();
         User speaker = reportRequest.getSpeaker();
 
@@ -106,8 +120,11 @@ public class ReportRequestService {
 
         Notification notification = createNotification(reportRequest, speaker, conference, "rejected");
 
-        daoFactory.createNotificationDao().create(notification);
-        daoFactory.createReportRequestDao().delete(reportRequest.getId());
+        try (NotificationDao notificationDao = daoFactory.createNotificationDao();
+             ReportRequestDao reportRequestDao = daoFactory.createReportRequestDao()) {
+            notificationDao.create(notification);
+            reportRequestDao.delete(reportRequest.getId());
+        }
     }
 
     private Notification createNotification(ReportRequest reportRequest, User speaker, Conference conference, String status) {

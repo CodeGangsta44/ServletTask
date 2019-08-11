@@ -1,7 +1,9 @@
 package ua.dovhopoliuk.model.dao.implementation;
 
+import ua.dovhopoliuk.model.dao.ConferenceDao;
 import ua.dovhopoliuk.model.dao.DaoFactory;
 import ua.dovhopoliuk.model.dao.ReportDao;
+import ua.dovhopoliuk.model.dao.UserDao;
 import ua.dovhopoliuk.model.dao.mapper.ConferenceMapper;
 import ua.dovhopoliuk.model.dao.mapper.ReportMapper;
 import ua.dovhopoliuk.model.dao.mapper.UserMapper;
@@ -17,7 +19,7 @@ import java.util.Map;
 
 public class JDBCReportDao implements ReportDao {
     private final Connection connection;
-    private final DaoFactory daoFactory = new JDBCDaoFactory();
+    private final DaoFactory daoFactory = DaoFactory.getInstance();
 
     private static final String SQL_INSERT_REPORT = "INSERT INTO reports" +
             "(topic, " +
@@ -33,6 +35,19 @@ public class JDBCReportDao implements ReportDao {
             "topic AS 'report_topic' " +
             "FROM reports " +
             "WHERE report_id = ?";
+
+    private static final String SQL_SELECT_ALL_REPORTS_BY_SPEAKER_ID = "SELECT *, " +
+            "topic AS 'report_topic' " +
+            "FROM reports " +
+            "WHERE user_id = ?";
+
+    private static final String SQL_SELECT_ALL_COMPLETED_REPORTS_BY_SPEAKER_ID = "SELECT *, " +
+            "r.topic AS 'report_topic' " +
+            "FROM reports AS r " +
+            "JOIN conferences AS c " +
+            "ON r.conference_id = c.conference_id " +
+            "WHERE c.finished = true " +
+            "AND user_id = ?";
 
     private static final String SQL_UPDATE_REPORT_BY_ID = "UPDATE reports SET " +
             "topic = ?, " +
@@ -92,6 +107,37 @@ public class JDBCReportDao implements ReportDao {
     }
 
     @Override
+    public List<Report> findAllBySpeakerId(Long id) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_SELECT_ALL_REPORTS_BY_SPEAKER_ID)) {
+            preparedStatement.setLong(1, id);
+
+            return findReportsByPreparedStatement(preparedStatement);
+
+        } catch (SQLException e) {
+            System.err.format("SQL State: %s\n%s", e.getSQLState(), e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public List<Report> findAllBySpeakerIdAndConferenceIsFinished(Long id) {
+        try (PreparedStatement preparedStatement = connection
+                .prepareStatement(SQL_SELECT_ALL_COMPLETED_REPORTS_BY_SPEAKER_ID)) {
+            preparedStatement.setLong(1, id);
+
+            return findReportsByPreparedStatement(preparedStatement);
+
+        } catch (SQLException e) {
+            System.err.format("SQL State: %s\n%s", e.getSQLState(), e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
     public void update(Report entity) {
         try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_UPDATE_REPORT_BY_ID)) {
             fillPreparedStatement(entity, preparedStatement);
@@ -119,8 +165,12 @@ public class JDBCReportDao implements ReportDao {
     }
 
     @Override
-    public void close() throws Exception {
-        connection.close();
+    public void close() {
+        try {
+            connection.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void fillPreparedStatement(Report entity, PreparedStatement preparedStatement) throws SQLException {
@@ -140,19 +190,26 @@ public class JDBCReportDao implements ReportDao {
         ConferenceMapper conferenceMapper = new ConferenceMapper();
         ReportMapper reportMapper = new ReportMapper();
 
+        ConferenceDao conferenceDao = daoFactory.createConferenceDao();
+        UserDao userDao = daoFactory.createUserDao();
+
         while (resultSet.next()) {
             Report report = reportMapper.extractFromResultSet(resultSet);
             report = reportMapper.makeUnique(reports, report);
 
-            Conference conference = daoFactory.createConferenceDao().findById(resultSet.getLong("conference_id"));
+            Conference conference = conferenceDao.findById(resultSet.getLong("conference_id"));
             conference = conferenceMapper.makeUnique(conferences, conference);
 
-            User speaker = daoFactory.createUserDao().findById(resultSet.getLong("speaker_id"));
+            User speaker = userDao.findById(resultSet.getLong("speaker_id"));
             speaker = userMapper.makeUnique(users, speaker);
 
             report.setConference(conference);
             report.setSpeaker(speaker);
         }
+
+        conferenceDao.close();
+        userDao.close();
+
         return new ArrayList<>(reports.values());
     }
 }

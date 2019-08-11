@@ -1,6 +1,7 @@
 package ua.dovhopoliuk.model.service;
 
 import ua.dovhopoliuk.model.dao.DaoFactory;
+import ua.dovhopoliuk.model.dao.VoteDao;
 import ua.dovhopoliuk.model.entity.User;
 import ua.dovhopoliuk.model.entity.Vote;
 import ua.dovhopoliuk.model.exception.VoteNotFoundException;
@@ -8,7 +9,6 @@ import ua.dovhopoliuk.model.exception.VoteNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class VoteService {
     private final DaoFactory daoFactory = DaoFactory.getInstance();
@@ -19,49 +19,47 @@ public class VoteService {
     }
 
     public List<Vote> getAllVotesBySpeaker(Long speakerId) {
-        User speaker = daoFactory.createUserDao().findById(speakerId);
-
-        return daoFactory.createVoteDao().findAll().stream()
-                .filter(vote -> vote.getSpeaker().equals(speaker))
-                .collect(Collectors.toList());
-        //TODO: implement this method
-//        return voteRepository.findAllBySpeaker(speaker);
+        try (VoteDao voteDao = daoFactory.createVoteDao()) {
+            return voteDao.findAllBySpeakerId(speakerId);
+        }
     }
 
     public void saveVote(HttpServletRequest request, Long speakerId, int mark) {
-        User speaker = daoFactory.createUserDao().findById(speakerId);
+        User speaker = userService.getUserById(speakerId);
         User user = userService.getCurrentUser(request);
 
-        Vote currentVote = daoFactory.createVoteDao().findAll().stream()
-                .filter(vote -> vote.getSpeaker().equals(speaker) && vote.getUser().equals(user))
-                .findFirst()
-                .orElseGet(() -> {
-                    Vote vote = new Vote();
-                    vote.setSpeaker(speaker);
-                    vote.setUser(user);
-                    return vote;
-                });
+        Vote currentVote;
 
+        try (VoteDao voteDao = daoFactory.createVoteDao()) {
+            currentVote = voteDao.findBySpeakerAndUser(speakerId, user.getId())
+                    .orElseGet(() -> {
+                        Vote vote = new Vote();
+                        vote.setSpeaker(speaker);
+                        vote.setUser(user);
+                        return vote;
+            });
+        }
 
         currentVote.setMark(mark);
 
-        if (Objects.isNull(currentVote.getId())) {
-            daoFactory.createVoteDao().create(currentVote);
-        } else {
-            daoFactory.createVoteDao().update(currentVote);
+        try (VoteDao voteDao = daoFactory.createVoteDao()) {
+            if (Objects.isNull(currentVote.getId())) {
+                voteDao.create(currentVote);
+            } else {
+                voteDao.update(currentVote);
+            }
         }
     }
 
     public int getVoteOfCurrentUser(HttpServletRequest request, Long speakerId) {
         User user = userService.getCurrentUser(request);
-        User speaker = daoFactory.createUserDao().findById(speakerId);
 
-        Vote currentVote = daoFactory.createVoteDao().findAll().stream()
-                .filter(vote -> vote.getSpeaker().equals(speaker) && vote.getUser().equals(user))
-                .findFirst().orElseThrow(VoteNotFoundException::new);
-        // TODO: implement this method
-//        Vote vote = voteRepository.findBySpeakerAndUser(speaker, userService.getCurrentUser())
-//                .orElseThrow(VoteNotFoundException::new);
+        Vote currentVote;
+
+        try (VoteDao voteDao = daoFactory.createVoteDao()) {
+            currentVote = voteDao.findBySpeakerAndUser(speakerId, user.getId())
+                    .orElseThrow(VoteNotFoundException::new);
+        }
 
         return currentVote.getMark();
     }

@@ -16,7 +16,7 @@ function getConferencesList($scope, $http) {
             (data)=>{
                 console.log('SUCCESS');
                 console.log(data);
-                $scope.conferences = JSON.parse(data.data);
+                $scope.conferences = data.data;
             },
             (error) => {
                 console.log('FAIL');

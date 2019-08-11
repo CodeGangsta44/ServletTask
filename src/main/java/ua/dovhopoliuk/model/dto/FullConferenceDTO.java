@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 public class FullConferenceDTO {
     private Long id;
     private String topic;
-    private LocalDateTime eventDateTime;
+    private String eventDateTime;
     private String eventAddress;
 
     private Set<UserDTO> registeredGuests;
@@ -22,7 +22,7 @@ public class FullConferenceDTO {
     public FullConferenceDTO(Conference conference, boolean registered) {
         this.id = conference.getId();
         this.topic = conference.getTopic();
-        this.eventDateTime = conference.getEventDateTime();
+        this.eventDateTime = conference.getEventDateTime().toString();
         this.eventAddress = conference.getEventAddress();
 
         this.registeredGuests = conference.getRegisteredGuests()
@@ -55,11 +55,11 @@ public class FullConferenceDTO {
         this.topic = topic;
     }
 
-    public LocalDateTime getEventDateTime() {
+    public String getEventDateTime() {
         return eventDateTime;
     }
 
-    public void setEventDateTime(LocalDateTime eventDateTime) {
+    public void setEventDateTime(String eventDateTime) {
         this.eventDateTime = eventDateTime;
     }
 

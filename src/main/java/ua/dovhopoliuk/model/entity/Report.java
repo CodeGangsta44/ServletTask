@@ -1,5 +1,8 @@
 package ua.dovhopoliuk.model.entity;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 public class Report {
     private Long id;
     private String topic;
@@ -36,5 +39,35 @@ public class Report {
 
     public void setSpeaker(User speaker) {
         this.speaker = speaker;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+
+        if (o == null || getClass() != o.getClass() || hashCode() != o.hashCode()){
+            return false;
+        }
+
+        Report report = (Report)o;
+
+        return new EqualsBuilder()
+                .append(id, report.id)
+                .append(topic, report.topic)
+                .append(conference, report.conference)
+                .append(speaker, report.speaker)
+                .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+                .append(id)
+                .append(topic)
+                .append(conference)
+                .append(speaker)
+                .hashCode();
     }
 }

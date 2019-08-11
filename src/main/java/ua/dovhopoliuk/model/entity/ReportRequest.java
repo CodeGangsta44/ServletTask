@@ -1,5 +1,8 @@
 package ua.dovhopoliuk.model.entity;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 public class ReportRequest {
     private Long id;
     private String topic;
@@ -55,5 +58,35 @@ public class ReportRequest {
 
     public void setApprovedByModerator(boolean approvedByModerator) {
         this.approvedByModerator = approvedByModerator;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+
+        if (o == null || getClass() != o.getClass() || hashCode() != o.hashCode()){
+            return false;
+        }
+
+        ReportRequest reportRequest = (ReportRequest)o;
+
+        return new EqualsBuilder()
+                .append(id, reportRequest.id)
+                .append(topic, reportRequest.topic)
+                .append(conference, reportRequest.conference)
+                .append(speaker, reportRequest.speaker)
+                .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+                .append(id)
+                .append(topic)
+                .append(conference)
+                .append(speaker)
+                .hashCode();
     }
 }

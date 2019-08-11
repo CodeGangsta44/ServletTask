@@ -21,7 +21,7 @@ function getListOfNotifications($scope, $http, parameter) {
         .then(
             (data)=>{
                 console.log(data);
-                $scope.notifications = JSON.parse(data.data);
+                $scope.notifications = data.data;
             },
             (error) => {
                 console.log(error.data);

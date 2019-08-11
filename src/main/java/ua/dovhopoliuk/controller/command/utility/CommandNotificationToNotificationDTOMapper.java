@@ -11,16 +11,16 @@ public class CommandNotificationToNotificationDTOMapper {
         NotificationDTO dto = new NotificationDTO();
 
         String topicPattern =  CommandBundleUtility
-                .getMessage(request, "message", notification.getTopicKey());
+                .getMessage(request, "messages", notification.getTopicKey());
 
         String messagePattern = CommandBundleUtility
-                .getMessage(request, "message",  notification.getMessageKey());
+                .getMessage(request, "messages",  notification.getMessageKey());
 
         String topic = MessageFormat.format(topicPattern, notification.getTopicValues().toArray());
         String message = MessageFormat.format(messagePattern, notification.getMessageValues().toArray());
 
         dto.setId(notification.getId());
-        dto.setNotificationDateTime(notification.getNotificationDateTime());
+        dto.setNotificationDateTime(notification.getNotificationDateTime().toString());
         dto.setTopic(topic);
         dto.setMessage(message);
 
