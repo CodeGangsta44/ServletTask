@@ -6,6 +6,7 @@ import ua.dovhopoliuk.model.dto.ConferenceDTO;
 import ua.dovhopoliuk.model.service.ConferenceService;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Objects;
 
 public class GetAllConferencesCommand implements Command {
     private CommandJsonUtility<ConferenceDTO[]> conferenceDTOArrayCommandJsonUtility =
@@ -19,8 +20,19 @@ public class GetAllConferencesCommand implements Command {
 
     @Override
     public String execute(HttpServletRequest request) {
-        ConferenceDTO[] conferences = conferenceService.getAllValidConferences().stream()
-                .map(ConferenceDTO::new).toArray(ConferenceDTO[]::new);
+        String page = request.getParameter("page");
+        String capacity = request.getParameter("capacity");
+
+        ConferenceDTO[] conferences;
+
+        if (!Objects.isNull(page) && !Objects.isNull(capacity)) {
+            conferences = conferenceService.getAllValidConferencesByPage(Integer.parseInt(page), Integer.parseInt(capacity)).stream()
+                    .map(ConferenceDTO::new).toArray(ConferenceDTO[]::new);
+
+        } else {
+            conferences = conferenceService.getAllValidConferences().stream()
+                    .map(ConferenceDTO::new).toArray(ConferenceDTO[]::new);
+        }
 
         return conferenceDTOArrayCommandJsonUtility.toJson(conferences);
     }

@@ -26,7 +26,7 @@ public class UpdateConferenceByIdCommand implements Command {
                 .fromJson(CommandRequestBodyReaderUtility
                         .readRequestBody(request));
 
-        conferenceService.updateConferenceById(conferenceId, conference);
+        conferenceService.updateConferenceById(conference);
 
         return null;
     }

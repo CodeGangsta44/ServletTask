@@ -27,6 +27,14 @@ public class ConferenceService {
         }
     }
 
+    public List<Conference> getAllValidConferencesByPage(Integer page, Integer capacity) {
+        Integer start = (page - 1) * capacity;
+        Integer end = capacity;
+        try (ConferenceDao conferenceDao = daoFactory.createConferenceDao()) {
+            return conferenceDao.findAllByApprovedIsTrueAndFinishedIsFalse(start, end);
+        }
+    }
+
     public List<Conference> getAllNotApprovedConferences()  {
         try (ConferenceDao conferenceDao = daoFactory.createConferenceDao()) {
             return conferenceDao.findAllByApprovedIsFalse();
@@ -54,6 +62,12 @@ public class ConferenceService {
         }
     }
 
+    public Integer getTotalNumberOfValidConferences() {
+        try (ConferenceDao conferenceDao = daoFactory.createConferenceDao()) {
+            return conferenceDao.getTotalNumberOfConferencesByApprovedIsTrueAndFinishedIsFalse();
+        }
+    }
+
     public void addNewConference(Conference conference) {
         try (ConferenceDao conferenceDao = daoFactory.createConferenceDao()) {
             conferenceDao.create(conference);
@@ -66,34 +80,34 @@ public class ConferenceService {
         }
     }
 
-    public void updateConferenceById(Long id, Conference newConference) {
-        Conference oldConference = getConferenceById(id);
-        copyUpdatableFields(oldConference, newConference);
+    public void updateConferenceById(Conference newConference) {
+//        Conference oldConference = getConferenceById(id);
+//        copyUpdatableFields(oldConference, newConference);
 
         try (ConferenceDao conferenceDao = daoFactory.createConferenceDao()) {
-            conferenceDao.update(oldConference);
+            conferenceDao.update(newConference);
         }
     }
 
     private void copyUpdatableFields(Conference oldConf, Conference newConf) {
 
-        // TODO null -> @Optional, Object.isNull()
-
-        if (newConf.getTopic() != null) {
-            oldConf.setTopic(newConf.getTopic());
-        }
-
-        if (newConf.getEventDateTime() != null) {
-            oldConf.setEventDateTime(newConf.getEventDateTime());
-        }
-
-        if (newConf.getEventAddress() != null) {
-            oldConf.setEventAddress(newConf.getEventAddress());
-        }
-
-        if (newConf.getDescription() != null) {
-            oldConf.setDescription(newConf.getDescription());
-        }
+//        // TODO null -> @Optional, Object.isNull()
+//
+//        if (newConf.getTopic() != null) {
+//            oldConf.setTopic(newConf.getTopic());
+//        }
+//
+//        if (newConf.getEventDateTime() != null) {
+//            oldConf.setEventDateTime(newConf.getEventDateTime());
+//        }
+//
+//        if (newConf.getEventAddress() != null) {
+//            oldConf.setEventAddress(newConf.getEventAddress());
+//        }
+//
+//        if (newConf.getDescription() != null) {
+//            oldConf.setDescription(newConf.getDescription());
+//        }
     }
 
     public Set<User> getRegisteredUsers(Long conferenceId) {
@@ -139,7 +153,7 @@ public class ConferenceService {
     public void approve(Long conferenceId) {
         Conference conference = getConferenceById(conferenceId);
         conference.setApproved(true);
-        updateConferenceById(conferenceId, conference);
+        updateConferenceById(conference);
     }
 
     public void reject(Long conferenceId) {
@@ -150,6 +164,6 @@ public class ConferenceService {
         Conference conference = getConferenceById(conferenceId);
         conference.setNumberOfVisitedGuests(numberOfVisitedGuests);
         conference.setFinished(true);
-        updateConferenceById(conferenceId, conference);
+        updateConferenceById(conference);
     }
 }

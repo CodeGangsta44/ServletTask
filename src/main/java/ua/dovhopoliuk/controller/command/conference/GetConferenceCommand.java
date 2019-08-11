@@ -27,6 +27,8 @@ public class GetConferenceCommand implements Command {
                 new GetAllConferencesByCurrentUserCommand(conferenceService));
         commands.put("id",
                 new GetConferenceByIdCommand(conferenceService));
+        commands.put("totalNumber",
+                new GetNumberOfAllValidConferences(conferenceService));
         commands.put("id/registeredGuests",
                 new GetRegisteredUsersByConferenceIdCommand(conferenceService));
         commands.put("id/changeRegistration",

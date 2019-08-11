@@ -4,9 +4,11 @@ import ua.dovhopoliuk.model.dao.DaoFactory;
 import ua.dovhopoliuk.model.dao.NotificationDao;
 import ua.dovhopoliuk.model.dao.ReportDao;
 import ua.dovhopoliuk.model.dao.ReportRequestDao;
+import ua.dovhopoliuk.model.dao.implementation.TransactionalJDBCDaoFactory;
 import ua.dovhopoliuk.model.entity.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -103,12 +105,29 @@ public class ReportRequestService {
 
         Notification notification = createNotification(reportRequest, speaker, conference, "approved");
 
-        try (NotificationDao notificationDao = daoFactory.createNotificationDao();
-                ReportDao reportDao = daoFactory.createReportDao();
-                ReportRequestDao reportRequestDao = daoFactory.createReportRequestDao()) {
+        TransactionalJDBCDaoFactory transactionalDaoFactory = new TransactionalJDBCDaoFactory();
+        NotificationDao notificationDao = transactionalDaoFactory.createNotificationDao();
+        ReportDao reportDao = transactionalDaoFactory.createReportDao();
+        ReportRequestDao reportRequestDao = transactionalDaoFactory.createReportRequestDao();
+
+        try {
+            transactionalDaoFactory.beginTransaction();
+
             notificationDao.create(notification);
             reportDao.create(report);
             reportRequestDao.delete(reportRequest.getId());
+
+            transactionalDaoFactory.commitTransaction();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            try {
+                transactionalDaoFactory.rollbackTransaction();
+            } catch (SQLException er) {
+                er.printStackTrace();
+            }
+        } finally {
+            transactionalDaoFactory.close();
         }
     }
 
@@ -120,10 +139,27 @@ public class ReportRequestService {
 
         Notification notification = createNotification(reportRequest, speaker, conference, "rejected");
 
-        try (NotificationDao notificationDao = daoFactory.createNotificationDao();
-             ReportRequestDao reportRequestDao = daoFactory.createReportRequestDao()) {
+        TransactionalJDBCDaoFactory transactionalDaoFactory = new TransactionalJDBCDaoFactory();
+        NotificationDao notificationDao = transactionalDaoFactory.createNotificationDao();
+        ReportRequestDao reportRequestDao = transactionalDaoFactory.createReportRequestDao();
+
+        try {
+            transactionalDaoFactory.beginTransaction();
+
             notificationDao.create(notification);
             reportRequestDao.delete(reportRequest.getId());
+
+            transactionalDaoFactory.commitTransaction();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            try {
+                transactionalDaoFactory.rollbackTransaction();
+            } catch (SQLException er) {
+                er.printStackTrace();
+            }
+        } finally {
+            transactionalDaoFactory.close();
         }
     }
 

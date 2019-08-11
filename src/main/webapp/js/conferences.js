@@ -27,6 +27,33 @@ function getConferencesList($scope, $http) {
             })
 }
 
+function getConferencesPage($scope, $http) {
+    $http.get("/app/api/conferences", { params : { page : $scope.currentPage, capacity : $scope.currentCapacity } })
+        .then(
+            (data) => {
+                console.log(data);
+                $scope.conferences = data.data;
+                $scope.highLightButtons();
+            },
+            (error) => {
+                console.log(error);
+            }
+        )
+}
+
+function getTotalConferencesNumber($scope, $http) {
+    $http.get("/app/api/conferences/totalNumber")
+        .then(
+            (data) => {
+                $scope.totalNumber = data.data;
+                console.log(data);
+            },
+            (error) => {
+                console.log(error);
+            }
+        )
+}
+
 
 app.config(function ($routeProvider) {
     $routeProvider
@@ -83,14 +110,95 @@ function answerRequest($scope, $http, id, answer) {
 }
 
 app.controller("ConferencesListCtrl", function ($scope, $http) {
-        $scope.conferences = [];
-        $scope.path = '/';
-        getConferencesList($scope, $http);
+    $scope.conferences = [];
+    $scope.path = '/';
+    $scope.currentPage = 1;
+    $scope.numberOfPages = 0;
+    $scope.currentCapacity = 'All';
+    getConferencesList($scope, $http);
+    getConferencesPage($scope, $http);
+    getTotalConferencesNumber($scope, $http);
+
+    $scope.selectPage = (number) => {
+        console.log(number);
+        $scope.currentPage = number;
+        getConferencesPage($scope, $http);
+    };
+
+    $scope.updateButtons = () => {
+        if ($scope.currentCapacity === 'All') {
+            getConferencesList($scope, $http);
+            document.getElementById('topPageButtonGroup').hidden = true;
+            document.getElementById('bottomPageButtonGroup').hidden = true;
+        } else {
+            document.getElementById('topPageButtonGroup').hidden = false;
+            document.getElementById('bottomPageButtonGroup').hidden = false;
+            getTotalConferencesNumber($scope, $http);
+            $scope.numberOfPages = Math.ceil($scope.totalNumber / $scope.currentCapacity);
+            getConferencesPage($scope, $http);
+        }
+    };
+
+    $scope.highLightButtons = () => {
+        for (let i = 1; i <= $scope.numberOfPages; i++) {
+            document.getElementById('pageButton-top-' + i).classList.remove('active');
+            document.getElementById('pageButton-bottom-' + i).classList.remove('active');
+        }
+        document.getElementById('pageButton-top-' + $scope.currentPage).classList.add('active');
+        document.getElementById('pageButton-bottom-' + $scope.currentPage).classList.add('active');
+    };
+
+    $scope.checkButtonsConditions = () => {
+        if ($scope.currentPage === 1) {
+            let elements = document.getElementsByClassName('previous-page-button');
+            Array.prototype.forEach.call(elements, function(el) {
+                el.classList.add('disabled');
+            });
+        }
+
+        if ($scope.currentPage > 1) {
+            let elements = document.getElementsByClassName('previous-page-button');
+            Array.prototype.forEach.call(elements, function(el) {
+                el.classList.remove('disabled');
+            });
+        }
+
+        if ($scope.currentPage === $scope.numberOfPages) {
+            let elements = document.getElementsByClassName('next-page-button');
+            Array.prototype.forEach.call(elements, function(el) {
+                el.classList.add('disabled');
+            });
+        }
+
+        if ($scope.currentPage < $scope.numberOfPages) {
+            let elements = document.getElementsByClassName('next-page-button');
+            Array.prototype.forEach.call(elements, function(el) {
+                el.classList.remove('disabled');
+            });
+        }
+    };
+
+    $scope.previousPage = () => {
+        if ($scope.currentPage > 1) {
+            $scope.currentPage --;
+            $scope.checkButtonsConditions();
+            getConferencesPage($scope, $http);
+        }
+    };
+
+    $scope.nextPage = () => {
+        if ($scope.currentPage < $scope.numberOfPages) {
+            $scope.currentPage ++;
+            $scope.checkButtonsConditions();
+            getConferencesPage($scope, $http);
+        }
+    }
 });
 
 app.controller("ConferenceRequestsListCtrl", function ($scope, $http) {
     $scope.conferences = [];
     $scope.path = '/requests';
+
     getConferencesList($scope, $http);
 
     $scope.processRequest = (id, answer) => answerRequest.call(this, $scope, $http, id, answer);
@@ -98,7 +206,7 @@ app.controller("ConferenceRequestsListCtrl", function ($scope, $http) {
 
 app.controller("NotFinishedConferencesListCtrl", function ($scope, $http) {
     $scope.conferences = [];
-    $scope.path = '/notFinished';
+    $scope.path = '/';
     getConferencesList($scope, $http);
 
     $scope.prepareForConferenceFinishing = (id) => {

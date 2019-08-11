@@ -62,6 +62,44 @@ public class JDBCConferenceDao implements ConferenceDao {
             "LEFT JOIN user_roles AS ur " +
             "ON u.user_id = ur.user_user_id";
 
+    private static final String SQL_SELECT_ALL_CONFERENCES_WITH_REGISTERED_USERS_AND_PAGINATION = "SELECT *, " +
+            "c.topic AS 'conference_topic', " +
+            "r.user_id AS 'speaker_id', " +
+            "r.topic AS 'report_topic' " +
+            "FROM " +
+              "(SELECT * FROM conferences " +
+              " WHERE approved = true " +
+              " AND finished = false" +
+              " ORDER BY conference_id" +
+              " LIMIT ?, ?) AS c " +
+            "LEFT JOIN users_conferences AS uc " +
+            "ON c.conference_id = uc.conference_id " +
+            "LEFT JOIN reports AS r " +
+            "ON c.conference_id = r.conference_id " +
+            "LEFT JOIN users AS u " +
+            "ON uc.user_id = u.user_id " +
+            "LEFT JOIN user_roles AS ur " +
+            "ON u.user_id = ur.user_user_id";
+
+    private static final String SQL_SELECT_ALL_CONFERENCES_WITH_REPORTS_AND_PAGINATION = "SELECT *, " +
+            "c.topic AS 'conference_topic', " +
+            "r.user_id AS 'speaker_id', " +
+            "r.topic AS 'report_topic' " +
+            "FROM " +
+              "(SELECT * FROM conferences " +
+              " WHERE approved = true " +
+               " AND finished = false" +
+              " ORDER BY conference_id " +
+              " LIMIT ?, ?) AS c " +
+            "LEFT JOIN users_conferences AS uc " +
+            "ON c.conference_id = uc.conference_id " +
+            "LEFT JOIN reports AS r " +
+            "ON c.conference_id = r.conference_id " +
+            "LEFT JOIN users AS u " +
+            "ON r.user_id = u.user_id " +
+            "LEFT JOIN user_roles AS ur " +
+            "ON u.user_id = ur.user_user_id";
+
 
     private static final String SQL_UPDATE_CONFERENCE_BY_ID = "UPDATE conferences SET " +
             "topic = ?, " +
@@ -72,6 +110,8 @@ public class JDBCConferenceDao implements ConferenceDao {
             "finished = ?, " +
             "number_of_visited_guests = ? " +
             "WHERE conference_id = ?";
+
+    private static final String SQL_COUNT_CONFERENCES = "SELECT COUNT(conference_id) AS sum FROM conferences AS c";
 
     private static final String SQL_DELETE_CONFERENCE_BY_ID = "DELETE FROM conferences " +
             "WHERE conference_id = ?";
@@ -165,6 +205,31 @@ public class JDBCConferenceDao implements ConferenceDao {
             preparedStatementForUsers.setBoolean(2, false);
             preparedStatementForReports.setBoolean(1, true);
             preparedStatementForReports.setBoolean(2, false);
+
+            return findConferencesByPreparedStatements(preparedStatementForUsers, preparedStatementForReports);
+
+
+        } catch (SQLException e) {
+            System.err.format("SQL State: %s\n%s", e.getSQLState(), e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public List<Conference> findAllByApprovedIsTrueAndFinishedIsFalse(Integer start, Integer end) {
+        try (PreparedStatement preparedStatementForUsers = connection
+                .prepareStatement(SQL_SELECT_ALL_CONFERENCES_WITH_REGISTERED_USERS_AND_PAGINATION);
+
+             PreparedStatement preparedStatementForReports = connection
+                     .prepareStatement(SQL_SELECT_ALL_CONFERENCES_WITH_REPORTS_AND_PAGINATION)){
+
+            preparedStatementForUsers.setInt(1, start);
+            preparedStatementForUsers.setInt(2, end);
+
+            preparedStatementForReports.setInt(1, start);
+            preparedStatementForReports.setInt(2, end);
 
             return findConferencesByPreparedStatements(preparedStatementForUsers, preparedStatementForReports);
 
@@ -306,6 +371,31 @@ public class JDBCConferenceDao implements ConferenceDao {
                 e.printStackTrace();
             }
         }
+    }
+
+    @Override
+    public Integer getTotalNumberOfConferencesByApprovedIsTrueAndFinishedIsFalse() {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_COUNT_CONFERENCES +
+                " WHERE " +
+                SQL_PATTERN_CONFERENCE_APPROVED +
+                " AND " +
+                SQL_PATTERN_CONFERENCE_FINISHED)) {
+
+            preparedStatement.setBoolean(1, true);
+            preparedStatement.setBoolean(2, false);
+
+            ResultSet resultSet =  preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getInt("sum");
+            }
+
+        } catch (SQLException e) {
+            System.err.format("SQL State: %s\n%s", e.getSQLState(), e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     @Override
