@@ -45,16 +45,6 @@ public class JDBCNotificationDao implements NotificationDao {
             "JOIN user_roles AS ur " +
             "ON u.user_id = ur.user_user_id";
 
-//    private static final String SQL_SELECT_NOTIFICATION_BY_ID = "SELECT * FROM notifications AS n " +
-//            "JOIN notification_message_values AS nmv " +
-//            "ON n.notification_id = nmv.notification_notification_id " +
-//            "JOIN notification_topic_values AS ntv " +
-//            "ON n.notification_id = ntv.notification_notification_id " +
-//            "JOIN users AS u " +
-//            "ON n.addressed_user_user_id = u.user_id " +
-//            "JOIN user_roles AS ur " +
-//            "ON u.user_id = ur.user_user_id " +
-//            "WHERE n.notification_id = ?";
 
     private static final String SQL_UPDATE_NOTIFICATION_BY_ID = "UPDATE notifications SET " +
             "message_key = ?, " +

@@ -9,8 +9,9 @@ import java.util.Objects;
 public class TransactionalJDBCDaoFactory extends JDBCDaoFactory {
     private Connection connection;
 
-
-    private Connection getConnection(){
+    @Override
+    public Connection getConnection(){
+        System.out.println("In my method");
         if (Objects.isNull(connection)) {
             try {
                 connection =  ConnectionPoolHolder.getDataSource().getConnection();

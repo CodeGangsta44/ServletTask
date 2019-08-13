@@ -116,7 +116,7 @@ app.controller("ConferencesListCtrl", function ($scope, $http) {
     $scope.numberOfPages = 0;
     $scope.currentCapacity = 'All';
     getConferencesList($scope, $http);
-    getConferencesPage($scope, $http);
+    // getConferencesPage($scope, $http);
     getTotalConferencesNumber($scope, $http);
 
     $scope.selectPage = (number) => {

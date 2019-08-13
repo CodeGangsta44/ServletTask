@@ -156,9 +156,15 @@ function getUserInfo($scope, $http) {
                 Object.assign($scope.user, data.data);
 
                 if ($scope.user.roles.indexOf('SPEAKER') !== -1) {
-                    document.getElementById("additionalSpeakerInformation").hidden = false;
+                    try {
+                        document.getElementById("additionalSpeakerInformation").hidden = false;
+                        getSpeakerInfo($scope, $http);
+                    } catch (e) {
+                        console.log(e);
+                    }
+                    // document.getElementById("additionalSpeakerInformation").hidden = false;
                     $scope.isSpeaker = true;
-                    getSpeakerInfo($scope, $http);
+                    // getSpeakerInfo($scope, $http);
                 }
             },
             (error) => {
@@ -218,6 +224,7 @@ app.controller("HomeCtrl", function ($scope, $http) {
 
     $scope.editProfile = () => {
         let resultMessageEl = document.getElementById('resultMessage');
+        console.log(JSON.stringify($scope.user));
         $http({
             method: "PUT",
             url: "app/api/users",
@@ -240,7 +247,7 @@ app.controller("HomeCtrl", function ($scope, $http) {
                 resultMessageEl.style.visibility='visible';
             }
         )
-    }
+    };
 
     $scope.toggleSpeakerSelection = () => {
 
@@ -254,6 +261,7 @@ app.controller("HomeCtrl", function ($scope, $http) {
             $scope.user.roles.push('SPEAKER');
         }
 
+        console.log($scope.user.roles);
     };
 });
 

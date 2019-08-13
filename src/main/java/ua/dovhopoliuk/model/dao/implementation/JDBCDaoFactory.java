@@ -41,7 +41,7 @@ public class JDBCDaoFactory extends DaoFactory {
         return new JDBCVoteDao(getConnection());
     }
 
-    private Connection getConnection(){
+    public Connection getConnection(){
         try {
             return dataSource.getConnection();
         } catch (SQLException e) {

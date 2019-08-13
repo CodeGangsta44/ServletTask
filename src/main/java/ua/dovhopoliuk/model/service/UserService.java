@@ -49,6 +49,8 @@ public class UserService {
         User target = getUserById(userDTO.getId());
         mapSourceToTarget(userDTO, target);
 
+        System.out.println(target.getRoles());
+
         try (UserDao userDao = daoFactory.createUserDao()) {
             userDao.update(target);
         }

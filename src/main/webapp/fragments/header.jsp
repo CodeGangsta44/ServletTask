@@ -51,7 +51,7 @@
 
         </ul>
 
-        <span class="glyphicon glyphicon-log-out" aria-hidden="true" style="margin-left: 5px; float: right">
+        <span class="glyphicon glyphicon-log-out user-option" aria-hidden="true" style="margin-left: 5px; float: right">
             <a href="/app/logout"><fmt:message key="label.logout"/></a>
         </span>
     </div>

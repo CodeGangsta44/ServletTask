@@ -1,5 +1,10 @@
 package ua.dovhopoliuk.model.dto;
 
+import ua.dovhopoliuk.controller.validation.Status;
+
+import java.util.List;
+import java.util.Map;
+
 public class RegNoteDTO {
 
     private String surname;
@@ -11,6 +16,10 @@ public class RegNoteDTO {
     private String password;
 
     private String isSpeaker;
+
+    private Status status;
+    private Map<String, List<String>> validationMessages;
+    private String localizedMessage;
 
     public String getSurname() {
         return surname;
@@ -66,5 +75,29 @@ public class RegNoteDTO {
 
     public void setIsSpeaker(String isSpeaker) {
         this.isSpeaker = isSpeaker;
+    }
+
+    public Map<String, List<String>> getValidationMessages() {
+        return validationMessages;
+    }
+
+    public void setValidationMessages(Map<String, List<String>> validationMessages) {
+        this.validationMessages = validationMessages;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    public String getLocalizedMessage() {
+        return localizedMessage;
+    }
+
+    public void setLocalizedMessage(String localizedMessage) {
+        this.localizedMessage = localizedMessage;
     }
 }

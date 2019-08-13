@@ -22,7 +22,7 @@
         <div class="col-md-8 col-md-offset-2">
             <%@include file="fragments/header.jsp" %>
 
-            <div class="alert alert-success" role="alert" id="resultMessage" style="visibility: hidden"></div>
+            <div class="alert alert-success" role="alert" id="resultMessage" style="margin-top: 20px" hidden></div>
             <h2 class="page-header"><fmt:message key="form.registration.name"/></h2>
             <form style="margin-bottom: 30px" name="form" autocomplete="off" novalidate ng-submit="sendForm(auth)">
                 <div class="form-group">
@@ -33,6 +33,7 @@
                            placeholder="<fmt:message key="label.surname"/>"
                            required
                            ng-model="auth.surname">
+                    <span id="surnameMessages" class="validationMessages" hidden>TEST</span>
                 </div>
                 <div class="form-group">
                     <label id="inputNameLabel" for="exampleInputName"><fmt:message key="label.name"/></label>
@@ -42,6 +43,7 @@
                            placeholder="<fmt:message key="label.name"/>"
                            required
                            ng-model="auth.name">
+                    <span id="nameMessages" class="validationMessages" hidden></span>
                 </div>
                 <div class="form-group">
                     <label id="inputPatronymicLabel" for="exampleInputPatronymic"><fmt:message key="label.patronymic"/></label>
@@ -51,6 +53,7 @@
                            placeholder="<fmt:message key="label.patronymic"/>"
                            required
                            ng-model="auth.patronymic">
+                    <span id="patronymicMessages" class="validationMessages" hidden></span>
                 </div>
                 <div class="form-group">
                     <label id="inputLoginLabel" for="exampleInputLogin"><fmt:message key="label.login"/></label>
@@ -60,6 +63,7 @@
                            placeholder="<fmt:message key="label.login"/>"
                            required
                            ng-model="auth.login">
+                    <span id="loginMessages" class="validationMessages" hidden></span>
                 </div>
                 <div class="form-group">
                     <label id="inputEmailLabel" for="exampleInputEmail"><fmt:message key="label.email"/></label>
@@ -69,6 +73,7 @@
                            placeholder="<fmt:message key="label.email"/>"
                            required
                            ng-model="auth.email">
+                    <span id="emailMessages" class="validationMessages" hidden></span>
                 </div>
                 <div class="form-group">
                     <label id="inputPasswordLabel" for="exampleInputPassword"><fmt:message key="label.password"/></label>
@@ -78,6 +83,7 @@
                            placeholder="<fmt:message key="label.password"/>"
                            required
                            ng-model="auth.password">
+                    <span id="passwordMessages" class="validationMessages" hidden></span>
                 </div>
                 <div class="form-group">
                     <label id="inputIsSpeakerLabel" for="exampleInputIsSpeaker"><fmt:message key="label.speaker"/></label>

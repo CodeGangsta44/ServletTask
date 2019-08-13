@@ -1,29 +1,41 @@
 const setColorInputLabel = (name, color) => {
-    console.log(typeof name);
     let resultString = 'input' + name.charAt(0).toUpperCase() + name.slice(1) + 'Label';
     document.getElementById(resultString).style.color = color;
 };
 
+const addValidationMessages = (key, messages) => {
+    let resultString = key + 'Messages';
+    let element = document.getElementById(resultString);
+    element.innerText = messages.join('\n');
+    element.style.color = '#d93b3b';
+    element.hidden = false;
+};
+
 const setListenerForInput = (name, scope) => {
-    console.log(name);
     let resultString = 'exampleInput' +  name.charAt(0).toUpperCase() + name.slice(1);
     let element = document.getElementById(resultString);
-    console.log(resultString);
     element.addEventListener('input', () => {
         setColorInputLabel(name, 'black');
         scope.message = '';
     })
 };
 
+const hideValidationMessages = () => {
+    [].forEach.call(document.getElementsByClassName('validationMessages'), function (el) {
+        console.log(el.id);
+        el.hidden = true;
+    });
+};
+
 angular.module("registration_form",[])
     .controller("AppCtrl", function ($scope, $http) {
-        console.log("STARTED");
         $scope.auth = {};
 
         let resultMessageEl = document.getElementById('resultMessage');
 
 
         $scope.sendForm = function(auth){
+            console.log($scope.auth);
 
             Object.keys($scope.auth)
                 .forEach(key => setListenerForInput(key, $scope));
@@ -36,8 +48,8 @@ angular.module("registration_form",[])
                 headers: { "Content-Type" : "application/json" }
             }).then(
                 (data) => {
-                    console.log('HERE IS DATA:');
                     console.log(data);
+                    hideValidationMessages();
                     Object.keys($scope.auth)
                         .forEach(key => {
                             setColorInputLabel(key, 'black');
@@ -45,23 +57,34 @@ angular.module("registration_form",[])
                         });
                 resultMessageEl.className = 'alert alert-success';
                 resultMessageEl.innerText = data.data;
-                resultMessageEl.style.visibility='visible';
+                resultMessageEl.hidden = false;
         },
             (error) => {
                 console.log(error);
-                let data = error.data;
-                let note = data.note;
+                hideValidationMessages();
+                let note = error.data;
+
+                Object.keys(note.validationMessages)
+                    .forEach(key => {
+                        console.log(key);
+                        addValidationMessages(key, note.validationMessages[key]);
+                    });
+
+                resultMessageEl.className = 'alert alert-warning';
+                resultMessageEl.innerText = note.localizedMessage;
+                resultMessageEl.hidden = false;
+
+                delete note.validationMessages;
+                delete note.status;
+                delete note.localizedMessage;
 
                 Object.keys(note)
                     .forEach(
                         key => {
                             $scope.auth[key] = note[key];
-                            if (note[key] === '') setColorInputLabel(key, 'red');
+                            if (note[key] === '') setColorInputLabel(key, '#d93b3b');
                         });
 
-                resultMessageEl.className = 'alert alert-warning';
-                resultMessageEl.innerText = data.localizedMessage;
-                resultMessageEl.style.visibility='visible';
             }
         );
         }

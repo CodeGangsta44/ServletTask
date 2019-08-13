@@ -50,7 +50,7 @@
                 </button>
             </form>
             <div class="alert alert-info" role="alert">
-                <a href="/registration"><fmt:message key="title.registration"/></a>
+                <a href="/app/registration"><fmt:message key="title.registration"/></a>
 
                 <span style="float: right">
                         <a href="?lang=en"><fmt:message key="language.en"/></a>

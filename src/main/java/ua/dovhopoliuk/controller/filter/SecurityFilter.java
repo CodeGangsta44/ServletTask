@@ -22,11 +22,15 @@ public class SecurityFilter implements Filter {
 
         User user = (User)request.getSession().getAttribute("principals");
         String method = request.getMethod();
-        String url = request.getServletPath();
+        String url = request.getRequestURI();
+        url = url.replaceFirst(".*app", "").replaceFirst("\\d+", "id");
+        System.out.println(url);
 
-        if (request.getPathInfo() != null) {
-            url += request.getPathInfo();
-        }
+//        if (request.getPathInfo() != null) {
+//            url += request.getPathInfo();
+//        }
+
+        System.out.println(url);
 
 
         if (!SecurityConfig.isUrlSecured(url, method)) {

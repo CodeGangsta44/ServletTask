@@ -41,7 +41,7 @@ public class JDBCUserDao implements UserDao {
             "JOIN user_roles AS ur " +
             "ON u.user_id = ur.user_user_id";
 
-    private static final String SQL_DELETE_ROLES_BY_USER_ID = "DELETE * FROM user_roles " +
+    private static final String SQL_DELETE_ROLES_BY_USER_ID = "DELETE FROM user_roles " +
             "WHERE user_user_id = ?";
 
     private static final String SQL_UPDATE_USER_BY_ID = "UPDATE users SET " +
@@ -205,6 +205,7 @@ public class JDBCUserDao implements UserDao {
     private void deleteRoles(Long id) {
         try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_DELETE_ROLES_BY_USER_ID)) {
             preparedStatement.setLong(1, id);
+            preparedStatement.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -16,6 +16,7 @@ public class PageCommand implements Command {
         pages.put("conferences", new ConferencesPageCommand());
         pages.put("fragments", new FragmentPageCommand());
         pages.put("login", new LoginPageCommand());
+        pages.put("logout", new LogoutPageCommand());
         pages.put("", new MainPageCommand());
         pages.put("notifications", new NotificationsPageCommand());
         pages.put("registration", new RegistrationPageCommand());
@@ -29,6 +30,8 @@ public class PageCommand implements Command {
         String path = request.getRequestURI();
         path = path.replaceFirst(".*/app/" , "")
                 .replaceFirst("/.*", "");
+
+        System.out.println(path);
 
         Command command = pages.getOrDefault(path ,
                 (r) -> "/main.jsp");
