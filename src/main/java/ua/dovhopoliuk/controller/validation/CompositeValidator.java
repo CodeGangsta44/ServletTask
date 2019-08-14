@@ -22,7 +22,8 @@ public enum CompositeValidator {
     EMAIL(new NotBlankValidator(),
             new FormatValidator("pattern.email")),
     PASSWORD(new NotBlankValidator(),
-            new RangeValidator(6, 20));
+            new RangeValidator(6, 20),
+            new FormatValidator("pattern.password"));
 
     private List<Validator> validators;
 

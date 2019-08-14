@@ -69,7 +69,7 @@ public class ReportRequestService {
         reject(request, reportRequest);
     }
 
-    private void approve(HttpServletRequest request, ReportRequest reportRequest) {
+    public void approve(HttpServletRequest request, ReportRequest reportRequest) {
         User currentUser = userService.getCurrentUser(request);
 
 
@@ -91,7 +91,7 @@ public class ReportRequestService {
         }
     }
 
-    private void approveRequest(ReportRequest reportRequest) {
+    public void approveRequest(ReportRequest reportRequest) {
         Conference conference = reportRequest.getConference();
         Report report = new Report();
 
@@ -131,7 +131,7 @@ public class ReportRequestService {
         }
     }
 
-    private void reject(HttpServletRequest request, ReportRequest reportRequest) {
+    public void reject(HttpServletRequest request, ReportRequest reportRequest) {
         Conference conference = reportRequest.getConference();
         User speaker = reportRequest.getSpeaker();
 

@@ -66,7 +66,7 @@
             </ul>
             <div class="form-inline" style="float: right">
                 <label class="my-1 mr-2" for="TopInlineFormCustomSelect" >Items on page: </label>
-                <select class="custom-select my-1 mr-sm-2" id="TopInlineFormCustomSelect"
+                <select class="custom-select my-1 mr-sm-2" id="BottomInlineFormCustomSelect"
                         ng-model="currentCapacity"
                         ng-change="updateButtons()">
                     <option selected>All</option>
