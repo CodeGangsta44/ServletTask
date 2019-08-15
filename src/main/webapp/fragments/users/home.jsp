@@ -6,12 +6,6 @@
 <fmt:setBundle basename="messages"/>
 <div class="container" style="margin-top: 30px">
     <div style="display: flex; margin-top: 20px">
-<%--        <div style="flex: 1;  align-self:flex-start">--%>
-<%--            <button type="button" data-toggle="modal" data-target="#avatarModal" style="background-color: transparent; border: none">--%>
-<%--                <img ng-src="/img/{{user.avatarFileName}}" alt=""--%>
-<%--                     style="object-fit: cover; height: 350px; width: 350px; border-radius:50%">--%>
-<%--            </button>--%>
-<%--        </div>--%>
 
         <div class="card" style="flex: 1; align-self:flex-start">
             <div class="card-header" >
@@ -48,7 +42,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Change photo</h5>
+                    <h5 class="modal-title" id="avatarModalLabel"><fmt:message key="label.change.photo"/></h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -57,9 +51,9 @@
                     <input type="file"  file="file" required>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal"><fmt:message key="button.close"/></button>
                     <button class="btn btn-success" ng-click="changeAvatar()">
-                        Upload
+                        <fmt:message key="button.upload"/>
                     </button>
                 </div>
             </div>
@@ -71,7 +65,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Edit Profile</h5>
+                    <h5 class="modal-title" id="editModalLabel"><fmt:message key="label.edit.profile"/></h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -84,8 +78,8 @@
                                class="form-control"
                                id="exampleInputSurname"
                                placeholder="<fmt:message key="label.surname"/>"
-                               required
-                               ng-model="user.surname">
+                        required
+                        ng-model="user.surname">
 
                     </div>
                     <div class="form-group">
@@ -94,8 +88,8 @@
                                class="form-control"
                                id="exampleInputName"
                                placeholder="<fmt:message key="label.name"/>"
-                               required
-                               ng-model="user.name">
+                        required
+                        ng-model="user.name">
                     </div>
                     <div class="form-group">
                         <label id="inputPatronymicLabel" for="exampleInputPatronymic"><fmt:message key="label.patronymic"/></label>
@@ -103,8 +97,8 @@
                                class="form-control"
                                id="exampleInputPatronymic"
                                placeholder="<fmt:message key="label.patronymic"/>"
-                               required
-                               ng-model="user.patronymic">
+                        required
+                        ng-model="user.patronymic">
                     </div>
                     <div class="form-group">
                         <label id="inputLoginLabel" for="exampleInputLogin"><fmt:message key="label.login"/></label>
@@ -112,8 +106,8 @@
                                class="form-control"
                                id="exampleInputLogin"
                                placeholder="<fmt:message key="label.login"/>"
-                               required
-                               ng-model="user.login">
+                        required
+                        ng-model="user.login">
                     </div>
                     <div class="form-group">
                         <label id="inputEmailLabel" for="exampleInputEmail"><fmt:message key="label.email"/></label>
@@ -121,8 +115,8 @@
                                class="form-control"
                                id="exampleInputEmail"
                                placeholder="<fmt:message key="label.email"/>"
-                               required
-                               ng-model="user.email">
+                        required
+                        ng-model="user.email">
                     </div>
 
                     <div class="form-group">
@@ -131,15 +125,15 @@
                                class="form-control"
                                id="exampleInputIsSpeaker"
                                placeholder="<fmt:message key="label.speaker"/>"
-                               ng-model="isSpeaker"
-                               ng-checked="isSpeaker"
-                               ng-click="toggleSpeakerSelection()">
+                        ng-model="isSpeaker"
+                        ng-checked="isSpeaker"
+                        ng-click="toggleSpeakerSelection()">
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal"><fmt:message key="button.close"/></button>
                     <button class="btn btn-success" ng-click="editProfile()">
-                        Save
+                        <fmt:message key="button.save"/>
                     </button>
                 </div>
             </div>

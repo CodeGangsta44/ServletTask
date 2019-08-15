@@ -4,8 +4,7 @@
 <%@ page isELIgnored="false" %>
 <fmt:setLocale value="${sessionScope.lang}" />
 <fmt:setBundle basename="messages"/>
-<div class="panel panel-default">
-    <div class="panel-heading"><fmt:message key="label.finished.conferences"/></div>
+<div class="container" style="margin-top: 20px">
     <div class="panel-body">
         <table class="table table-striped">
             <thead>
@@ -14,7 +13,6 @@
                 <th><fmt:message key="label.topic"/></th>
                 <th><fmt:message key="label.date.and.time"/></th>
                 <th><fmt:message key="label.address"/></th>
-                <th><fmt:message key="label.percent.registered.guests"/></th>
             </tr>
             </thead>
             <tbody>
@@ -23,7 +21,6 @@
                 <td><a ng-href="#!{{item.id}}">{{item.topic}}</a></td>
                 <td>{{item.eventDateTime}}</td>
                 <td>{{item.eventAddress}}</td>
-                <td>{{item.numberOfVisitedGuests / item.numberOfRegisteredGuests * 100 + '%'}}</td>
             </tr>
             </tbody>
         </table>

@@ -5,7 +5,7 @@
 <fmt:setLocale value="${sessionScope.lang}" />
 <fmt:setBundle basename="messages"/>
 <div class="panel panel-default">
-    <div class="panel-heading">Report requests</div>
+    <div class="panel-heading"><fmt:message key="label.notifications"/></div>
     <div class="panel-body">
         <ul style="list-style: none; padding-left: 0">
             <li ng-repeat="item in notifications | orderBy: 'notificationDateTime'">

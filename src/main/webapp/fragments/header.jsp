@@ -30,6 +30,9 @@
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                     <a class="dropdown-item user-option" href="/app/conferences"><fmt:message key="label.all.conferences"/></a>
                     <a class="dropdown-item user-option" href="/app/conferences#!/me"><fmt:message key="label.planned.conferences"/></a>
+                    <a class="dropdown-item moder-option" href="/app/conferences#!/notFinished"><fmt:message key="label.not.finished.conferences"/></a>
+                    <a class="dropdown-item moder-option" href="/app/conferences#!/finished"><fmt:message key="label.finished.conferences"/></a>
+                    <a class="dropdown-item moder-option" href="/app/conferences#!/requests"><fmt:message key="label.conferences.requests"/></a>
                 </div>
             </li>
 
@@ -38,7 +41,8 @@
                     <h6><fmt:message key="label.reports"/></h6>
                 </a>
                 <div class="dropdown-menu " aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item speaker-option" href="#"><fmt:message key="label.planned.reports"/></a>
+                    <a class="dropdown-item moder-option" href="/app/reports#!/"><fmt:message key="label.all.reports"/></a>
+                    <a class="dropdown-item speaker-option" href="/app/reports#!/me"><fmt:message key="label.planned.reports"/></a>
                     <a class="dropdown-item speaker-option" href="/app/reportRequests#!/me"><fmt:message key="label.report.propositions"/></a>
                     <a class="dropdown-item moder-option" href="/app/reportRequests"><fmt:message key="label.report.requests"/></a>
                 </div>

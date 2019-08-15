@@ -5,16 +5,16 @@
 <fmt:setLocale value="${sessionScope.lang}" />
 <fmt:setBundle basename="messages"/>
 <div class="panel panel-default">
-    <div class="panel-heading">Report requests</div>
+    <div class="panel-heading"><fmt:message key="label.report.requests"/></div>
     <div class="panel-body">
         <table class="table table-striped">
             <thead>
             <tr>
-                <th>ID</th>
-                <th>Topic</th>
-                <th>Speaker</th>
-                <th>Conference</th>
-                <th>Actions</th>
+                <th><fmt:message key="column.id"/></th>
+                <th><fmt:message key="label.topic"/></th>
+                <th><fmt:message key="label.speaker"/></th>
+                <th><fmt:message key="label.conference"/></th>
+                <th><fmt:message key="label.actions"/></th>
             </tr>
             </thead>
             <tbody>
@@ -25,11 +25,11 @@
                 <td>{{item.conference.topic}}</td>
                 <td>
                     <button class="btn btn-success" style="margin-top:5px" ng-click="processRequest(item.id, true)">
-                        Approve
+                        <fmt:message key="button.approve"/>
                     </button>
 
                     <button class="btn btn-danger" style="margin-top:5px" ng-click="processRequest(item.id, false)">
-                        Reject
+                        <fmt:message key="button.reject"/>
                     </button>
                 </td>
             </tr>

@@ -10,11 +10,50 @@ function showListOfReports(data, $scope) {
 }
 
 function getListOfReports($http, $scope) {
-    $http.get('app/api/reports/')
+    $http.get('app/api/reports/' + $scope.path)
         .then (
             (data) => {
                 console.log(data);
                 showListOfReports(data, $scope)
+            },
+            (error) => {
+                console.log(error);
+            }
+        );
+}
+
+function saveChanges($scope, $http) {
+    let resultMessageEl = document.getElementById('resultMessage');
+    $http({
+        method: "PUT",
+        url: "app/api/reports",
+        data: JSON.stringify($scope.editForm),
+        headers: {"Content-Type" : "application/json"}
+    }).then(
+        (data) => {
+            console.log(data);
+
+            getListOfReports($http, $scope);
+            resultMessageEl.className = 'alert alert-success';
+            resultMessageEl.innerText = data.data;
+            resultMessageEl.style.visibility='visible';
+        },
+        (error) => {
+            console.log(error);
+            resultMessageEl.className = 'alert alert-warning';
+            resultMessageEl.innerText = error.data.localizedMessage;
+            resultMessageEl.style.visibility='visible';
+        }
+    );
+}
+
+function deleteReport($scope, $http) {
+    console.log($scope.reportIdToDelete);
+    $http.delete("app/api/reports/" + $scope.reportIdToDelete)
+        .then(
+            (data) => {
+                console.log(data);
+                getListOfReports($http, $scope);
             },
             (error) => {
                 console.log(error);
@@ -29,6 +68,10 @@ app.config(function ($routeProvider) {
         .when('/', {
             templateUrl: 'app/fragments/report/report_list',
             controller: 'ReportListCtrl'
+        })
+        .when('/me', {
+            templateUrl: 'app/fragments/report/report_list',
+            controller: 'MyReportListCtrl'
         })
         .when('/add', {
             templateUrl: 'app/fragments/report/report_form',
@@ -65,6 +108,7 @@ app.config(function ($routeProvider) {
 app.controller("ReportListCtrl", function ($scope, $http) {
     $scope.reports = [];
     $scope.editForm = {};
+    $scope.path = '';
 
     getListOfReports($http, $scope);
 
@@ -72,30 +116,7 @@ app.controller("ReportListCtrl", function ($scope, $http) {
         Object.assign($scope.editForm, report);
     };
 
-    $scope.saveChanges = () => {
-        let resultMessageEl = document.getElementById('resultMessage');
-        $http({
-            method: "PUT",
-            url: "app/api/reports",
-            data: JSON.stringify($scope.editForm),
-            headers: {"Content-Type" : "application/json"}
-        }).then(
-            (data) => {
-                console.log(data);
-
-                getListOfReports($http, $scope);
-                resultMessageEl.className = 'alert alert-success';
-                resultMessageEl.innerText = data.data;
-                resultMessageEl.style.visibility='visible';
-            },
-            (error) => {
-                console.log(error);
-                resultMessageEl.className = 'alert alert-warning';
-                resultMessageEl.innerText = error.data.localizedMessage;
-                resultMessageEl.style.visibility='visible';
-            }
-        );
-    };
+    $scope.saveChanges = () => saveChanges.call(this, $scope, $http);
 
     $scope.prepareToDeleteReport = (id) => {
         console.log(id);
@@ -106,19 +127,31 @@ app.controller("ReportListCtrl", function ($scope, $http) {
         delete $scope.reportIdToDelete;
     };
 
-    $scope.deleteReport = () => {
-        console.log($scope.reportIdToDelete);
-        $http.delete("app/api/reports/" + $scope.reportIdToDelete)
-            .then(
-                (data) => {
-                    console.log(data);
-                    getListOfReports($http, $scope);
-                },
-                (error) => {
-                    console.log(error);
-                }
-            );
+    $scope.deleteReport = () => deleteReport.call(this, $scope, $http);
+});
+
+app.controller("MyReportListCtrl", function ($scope, $http) {
+    $scope.reports = [];
+    $scope.editForm = {};
+    $scope.path='me';
+    getListOfReports($http, $scope);
+
+    $scope.editReport = (report) => {
+        Object.assign($scope.editForm, report);
     };
+
+    $scope.saveChanges = () => saveChanges.call(this, $scope, $http);
+
+    $scope.prepareToDeleteReport = (id) => {
+        console.log(id);
+        $scope.reportIdToDelete = id;
+    };
+
+    $scope.cancelReportDeleting = () => {
+        delete $scope.reportIdToDelete;
+    };
+
+    $scope.deleteReport = () => deleteReport.call(this, $scope, $http);
 });
 
 app.controller("ReportCtrl", function ($scope, $http, $routeParams) {

@@ -5,16 +5,16 @@
 <fmt:setLocale value="${sessionScope.lang}" />
 <fmt:setBundle basename="messages"/>
 <div class="panel panel-default">
-    <div class="panel-heading">Report requests</div>
+    <div class="panel-heading"><fmt:message key="label.reports"/></div>
     <div class="panel-body">
         <table class="table table-striped">
             <thead>
             <tr>
-                <th>ID</th>
-                <th>Topic</th>
-                <th>Speaker</th>
-                <th>Conference</th>
-                <th>Actions</th>
+                <th><fmt:message key="column.id"/></th>
+                <th><fmt:message key="label.topic"/></th>
+                <th><fmt:message key="label.speaker"/></th>
+                <th><fmt:message key="label.conference"/></th>
+                <th><fmt:message key="label.actions"/></th>
             </tr>
             </thead>
             <tbody>
@@ -51,7 +51,7 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="ModalLabelEditReport">Edit Report</h5>
+                        <h5 class="modal-title" id="editModalLabel"><fmt:message key="label.edit.report"/></h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -64,8 +64,8 @@
                                    class="form-control"
                                    id="exampleInputSurname"
                                    placeholder="<fmt:message key="label.topic"/>"
-                                   required
-                                   ng-model="editForm.topic">
+                            required
+                            ng-model="editForm.topic">
 
                         </div>
                     </div>
@@ -86,14 +86,14 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="ModalLabelConfirmDeleting">Confirm deleting</h5>
+                        <h5 class="modal-title" id="deleteModalLabel"><fmt:message key="label.confirm.deleting"/></h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"
                                 ng-click="cancelReportDeleting()">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
-                        Are you sure?
+                        <fmt:message key="label.deleting.question"/>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary"

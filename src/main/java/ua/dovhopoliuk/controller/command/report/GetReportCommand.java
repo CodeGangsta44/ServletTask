@@ -2,6 +2,7 @@ package ua.dovhopoliuk.controller.command.report;
 
 import ua.dovhopoliuk.controller.command.Command;
 import ua.dovhopoliuk.controller.command.report.get.GetAllReportsCommand;
+import ua.dovhopoliuk.controller.command.report.get.GetAllReportsOfCurrentUser;
 import ua.dovhopoliuk.model.service.ReportService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,7 +18,10 @@ public class GetReportCommand implements Command {
 
         commands = new HashMap<>();
 
-        commands.put("", new GetAllReportsCommand(reportService));
+        commands.put("",
+                new GetAllReportsCommand(reportService));
+        commands.put("me",
+                new GetAllReportsOfCurrentUser(reportService));
     }
 
     @Override

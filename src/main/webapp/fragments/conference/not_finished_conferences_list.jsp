@@ -5,16 +5,16 @@
 <fmt:setLocale value="${sessionScope.lang}" />
 <fmt:setBundle basename="messages"/>
 <div class="panel panel-default">
-    <div class="panel-heading">Conferences</div>
+    <div class="panel-heading"><fmt:message key="label.not.finished.conferences"/></div>
     <div class="panel-body">
         <table class="table table-striped">
             <thead>
             <tr>
-                <th>ID</th>
-                <th>Topic</th>
-                <th>Date and Time</th>
-                <th>Address</th>
-                <th>Actions</th>
+                <th><fmt:message key="column.id"/></th>
+                <th><fmt:message key="label.topic"/></th>
+                <th><fmt:message key="label.date.and.time"/></th>
+                <th><fmt:message key="label.address"/></th>
+                <th><fmt:message key="label.actions"/></th>
             </tr>
             </thead>
             <tbody>
@@ -42,7 +42,7 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Conference finishing</h5>
+                        <h5 class="modal-title" id="exampleModalLabel"><fmt:message key="label.conference.finishing"/></h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"
                                 ng-click="cancelConferenceFinishing()">
                             <span aria-hidden="true">&times;</span>
@@ -55,8 +55,8 @@
                                    class="form-control"
                                    id="exampleInputNumberOfVisitedGuests"
                                    placeholder="<fmt:message key="label.attended.guests"/>"
-                                   required
-                                   ng-model="numberOfVisitedGuests">
+                            required
+                            ng-model="numberOfVisitedGuests">
                         </div>
                     </div>
                     <div class="modal-footer">

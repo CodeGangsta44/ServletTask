@@ -200,7 +200,7 @@ public class JDBCReportDao implements ReportDao {
             Conference conference = conferenceDao.findById(resultSet.getLong("conference_id"));
             conference = conferenceMapper.makeUnique(conferences, conference);
 
-            User speaker = userDao.findById(resultSet.getLong("speaker_id"));
+            User speaker = userDao.findById(resultSet.getLong("user_id"));
             speaker = userMapper.makeUnique(users, speaker);
 
             report.setConference(conference);

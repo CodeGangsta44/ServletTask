@@ -73,7 +73,7 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="ModalLabelEditProfile">Edit Profile</h5>
+                        <h5 class="modal-title" id="editModalLabel"><fmt:message key="label.edit.profile"/></h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -86,8 +86,8 @@
                                    class="form-control"
                                    id="exampleInputSurname"
                                    placeholder="<fmt:message key="label.surname"/>"
-                                   required
-                                   ng-model="editForm.surname">
+                            required
+                            ng-model="editForm.surname">
 
                         </div>
                         <div class="form-group">
@@ -96,8 +96,8 @@
                                    class="form-control"
                                    id="exampleInputName"
                                    placeholder="<fmt:message key="label.name"/>"
-                                   required
-                                   ng-model="editForm.name">
+                            required
+                            ng-model="editForm.name">
                         </div>
                         <div class="form-group">
                             <label id="inputPatronymicLabel" for="exampleInputPatronymic"><fmt:message key="label.patronymic"/></label>
@@ -105,8 +105,8 @@
                                    class="form-control"
                                    id="exampleInputPatronymic"
                                    placeholder="<fmt:message key="label.patronymic"/>"
-                                   required
-                                   ng-model="editForm.patronymic">
+                            required
+                            ng-model="editForm.patronymic">
                         </div>
                         <div class="form-group">
                             <label id="inputLoginLabel" for="exampleInputLogin"><fmt:message key="label.login"/></label>
@@ -114,8 +114,8 @@
                                    class="form-control"
                                    id="exampleInputLogin"
                                    placeholder="<fmt:message key="label.login"/>"
-                                   required
-                                   ng-model="editForm.login">
+                            required
+                            ng-model="editForm.login">
                         </div>
                         <div class="form-group">
                             <label id="inputEmailLabel" for="exampleInputEmail"><fmt:message key="label.email"/></label>
@@ -123,13 +123,13 @@
                                    class="form-control"
                                    id="exampleInputEmail"
                                    placeholder="<fmt:message key="label.email"/>"
-                                   required
-                                   ng-model="editForm.email">
+                            required
+                            ng-model="editForm.email">
                         </div>
 
                         <div class="form-group">
-                            <label id="inputRolesLabel"><fmt:message key="label.roles"/></label>
-                            <ul ng-repeat="role in roles" style="list-style: none; padding-left: 0">
+                            <label id="inputRolesLabel" for="exampleInputRoles"><fmt:message key="label.roles"/></label>
+                            <ul id="exampleInputRoles" ng-repeat="role in roles" style="list-style: none; padding-left: 0">
                                 <li>
                                     <input type="checkbox"
                                            name="selectedRoles[]"
@@ -157,14 +157,14 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="ModalLabelConfirmDeleting">Confirm deleting</h5>
+                        <h5 class="modal-title" id="deleteModalLabel"><fmt:message key="label.confirm.deleting"/></h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"
                                 ng-click="cancelUserDeleting()">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
-                        Are you sure?
+                        <fmt:message key="label.deleting.question"/>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary"
@@ -185,7 +185,7 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="ModalLabelReportProposing">Report proposing</h5>
+                        <h5 class="modal-title" id="proposeReportModalLabel"><fmt:message key="label.report.proposition"/></h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"
                                 ng-click="cancelUserDeleting()">
                             <span aria-hidden="true">&times;</span>
@@ -196,7 +196,7 @@
                             <div class="form-group">
 
                                 <div class="form-group">
-                                    <label id="inputConferenceLabel" for="conferenceSelect">Conference</label>
+                                    <label id="inputConferenceLabel" for="conferenceSelect"><fmt:message key="label.conference"/></label>
                                     <select class="form-control"
                                             name="conferenceSelect"
                                             id="conferenceSelect"
@@ -208,7 +208,7 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label id="inputTopicLabel" for="topicInput">Topic</label>
+                                    <label id="inputTopicLabel" for="topicInput"><fmt:message key="label.topic"/></label>
                                     <input type="text"
                                            class="form-control"
                                            id="topicInput"

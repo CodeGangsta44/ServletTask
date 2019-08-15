@@ -39,8 +39,8 @@ public class AppServlet extends HttpServlet {
     private Map<String, Command> putCommands = new HashMap<>();
     private Map<String, Command> deleteCommands = new HashMap<>();
 
-    private ReportService reportService = new ReportService();
     private UserService userService = new UserService();
+    private ReportService reportService = new ReportService(userService);
     private ConferenceService conferenceService = new ConferenceService(userService);
     private ReportRequestService reportRequestService = new ReportRequestService(userService);
     private NotificationService notificationService = new NotificationService(userService);

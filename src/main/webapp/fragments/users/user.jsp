@@ -9,14 +9,10 @@
     <div style="display: flex">
         <div id="mainUserInformation" style="flex: 2">
             <div style="display: flex; margin-top: 20px">
-<%--                <div style="flex: 1;  align-self:flex-start">--%>
-<%--                    <img ng-src="/img/{{user.avatarFileName}}" alt=""--%>
-<%--                         style="object-fit: cover; height: 350px; width: 350px; border-radius:50%">--%>
-<%--                </div>--%>
 
                 <div class="card" style="flex: 1; align-self:flex-start">
                     <div class="card-header" >
-                        <div style="display: inline-block"><h5>Info</h5></div>
+                        <div style="display: inline-block"><h5><fmt:message key="label.info"/></h5></div>
                     </div>
                     <div class="card-body">
                         <div>
@@ -60,7 +56,7 @@
 
         <div id="additionalSpeakerInformation" style="flex: 1;" hidden>
             <div class="card" style="margin-top: 20px; margin-left: 20px;">
-                <div class="card-header"><h5>Additional speaker info</h5></div>
+                <div class="card-header"><h5><fmt:message key="label.additional.speaker.info"/></h5></div>
 
                 <div class="card-body">
                     <div id="stars" class="alert alert-success" style="margin: auto; text-align: center">
@@ -72,16 +68,16 @@
                     </div>
 
                     <div class="alert alert-success" style="margin-top: 20px">
-                        Your mark: {{currentUserMark}}
+                        <fmt:message key="label.your.mark"/>: {{currentUserMark}}
                     </div>
 
                     <div class="alert alert-success" style="margin-top: 20px">
-                        Average rating: {{averageRating}}
+                        <fmt:message key="label.average.rating"/>: {{averageRating}}
                     </div>
 
                     <div id="lines" class="alert alert-secondary" style="margin-top: 20px">
-                        <span><b>Marks</b></span>
-                        <span style="float: right"><b>Votes</b></span>
+                        <span><b><fmt:message key="label.marks"/></b></span>
+                        <span style="float: right"><b><fmt:message key="label.votes"/></b></span>
                         <ul style="list-style: none; padding-left: 0; margin-bottom: 0">
                             <li ng-repeat="x in [].constructor(5) track by $index" style="display: flex; justify-content: center; align-items: center;">
                                 {{5 - $index}}
@@ -95,19 +91,20 @@
                     </div>
 
                     <div class="alert alert-secondary" style="margin-top: 20px">
-                        Total reports: {{speakerStatistics.totalReports}}
+                        <fmt:message key="label.total.reports"/>: {{speakerStatistics.totalReports}}
                     </div>
 
                     <div class="alert alert-secondary" style="margin-top: 20px">
-                        Total conferences: {{speakerStatistics.totalConferences}}
+                        <fmt:message key="label.total.conferences"/>: {{speakerStatistics.totalConferences}}
                     </div>
 
                     <div class="alert alert-secondary" style="margin-top: 20px">
-                        Total people: {{speakerStatistics.totalPeople}}
+                        <fmt:message key="label.total.people"/>: {{speakerStatistics.totalPeople}}
                     </div>
                 </div>
 
             </div>
+
         </div>
     </div>
 </div>
